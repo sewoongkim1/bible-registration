@@ -119,35 +119,37 @@
       margin-bottom: 6px;
     }
 
-    /* 라디오 버튼 스타일 */
-    .radio-group {
+    /* 라디오 버튼 (chip 스타일 - index.html과 동일) */
+    .chip-group {
       display: flex;
+      gap: 7px;
       flex-wrap: wrap;
-      gap: 8px;
     }
-    .radio-group input[type="radio"] {
+    .chip-group input[type="radio"] {
       display: none;
     }
-    .radio-group label {
+    .chip-group .chip-label {
+      cursor: pointer;
+    }
+    .chip-group .chip {
       display: inline-block;
       padding: 8px 14px;
       border: 1.5px solid var(--border);
       border-radius: 20px;
       font-size: 13px;
-      font-weight: 500;
       color: var(--gray);
-      cursor: pointer;
-      transition: all 0.2s;
       background: var(--cream);
-      margin-bottom: 0;
+      transition: all 0.15s;
+      white-space: nowrap;
     }
-    .radio-group input[type="radio"]:checked + label {
+    .chip-group input[type="radio"]:checked + .chip {
+      border-color: var(--navy);
       background: var(--navy);
       color: var(--white);
-      border-color: var(--navy);
+      font-weight: 600;
     }
 
-    select, input[type="text"] {
+    input[type="text"] {
       width: 100%;
       padding: 12px 14px;
       border: 1.5px solid var(--border);
@@ -157,23 +159,11 @@
       color: #222;
       background: var(--cream);
       transition: border-color 0.2s;
-      appearance: none;
-      -webkit-appearance: none;
     }
-    select:focus, input[type="text"]:focus {
+    input[type="text"]:focus {
       outline: none;
       border-color: var(--navy);
       background: var(--white);
-    }
-    .select-wrap { position: relative; }
-    .select-wrap::after {
-      content: '▾';
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      pointer-events: none;
     }
 
     .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
@@ -355,38 +345,53 @@
         <div class="card-title">조회 조건</div>div>
         <p style="font-size:12px;color:var(--gray);margin-bottom:14px;">교구·목장·성명 중 하나 이상 선택하면 조회됩니다. (상태가 완료인 건은 제외됩니다)</p>
 
+        <!-- 교구: index.html과 동일한 chip 라디오 -->
         <div class="field">
           <label>교구</label>
-        <div class="radio-group">
-        <input type="radio" id="d-all" name="district" value="">
-        <label for="d-all">전체</label>
-        <input type="radio" id="d-1" name="district" value="1교구">
-        <label for="d-1">1교구</label>
-        <input type="radio" id="d-2" name="district" value="2교구">
-        <label for="d-2">2교구</label>
-        <input type="radio" id="d-3" name="district" value="3교구">
-        <label for="d-3">3교구</label>
-        <input type="radio" id="d-4" name="district" value="4교구">
-        <label for="d-4">4교구</label>
-        <input type="radio" id="d-5" name="district" value="5교구">
-        <label for="d-5">5교구</label>
+        <div class="chip-group">
+        <label class="chip-label">
+          <input type="radio" name="district" value="" id="d-all" checked />
+          <span class="chip">전체</span>span>
+        </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="믿음" />
+            <span class="chip">믿음</span>span>
+          </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="소망" />
+            <span class="chip">소망</span>span>
+          </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="사랑" />
+            <span class="chip">사랑</span>span>
+          </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="섬김" />
+            <span class="chip">섬김</span>span>
+          </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="은혜" />
+            <span class="chip">은혜</span>span>
+          </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="화평" />
+            <span class="chip">화평</span>span>
+          </label>
+          <label class="chip-label">
+            <input type="radio" name="district" value="기쁨" />
+            <span class="chip">기쁨</span>span>
+          </label>
         </div>div>
         </div>div>
+
+        <!-- 목장: 텍스트 입력 (index.html과 동일) -->
+        <div class="field">
+          <label>목장</label>
+        <input type="text" id="s-pasture" placeholder="목장명을 정확히 입력하세요" maxlength="20" />
+        <p class="hint">목장명 전체를 정확히 입력해야 조회됩니다.</p>
+        </div>div>
       
-      <div class="field">
-      <label>목장</label>
-      <div class="select-wrap">
-      <select id="s-pasture">
-      <option value="">전체 목장</option>option>
-      <option>믿음목장</option>
-      <option>소망목장</option>
-      <option>사랑목장</option>
-      <option>기쁨목장</option>
-      <option>평화목장</option>
-      </select>select>
-      </div>div>
-      </div>div>
-      
+      <!-- 성명: 텍스트 입력 -->
       <div class="field">
       <label>성명</label>
       <input type="text" id="s-name" placeholder="이름을 정확히 입력하세요" maxlength="10" />
@@ -438,10 +443,8 @@
     </main>
   
   <script>
-    // ★ 여기에 Apps Script 웹 앱 URL을 입력하세요
     const API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqywSQNZC8q6oQG0GbpQs7FyAl18hWNxjZKk4G3VXoH9UrDQ/exec';
 
-    // 선택된 교구 라디오 값 반환
     function getSelectedDistrict() {
         const checked = document.querySelector('input[name="district"]:checked');
         return checked ? checked.value : '';
@@ -449,11 +452,11 @@
 
     async function doSearch() {
         const district = getSelectedDistrict();
-        const pasture  = document.getElementById('s-pasture').value;
+        const pasture  = document.getElementById('s-pasture').value.trim();
         const name     = document.getElementById('s-name').value.trim();
 
         if (!district && !pasture && !name) {
-              showMsg('교구, 목장, 성명 중 하나 이상 선택해 주세요.');
+              showMsg('교구, 목장, 성명 중 하나 이상 선택 또는 입력해 주세요.');
               return;
         }
 
@@ -471,24 +474,24 @@
               const data = await res.json();
 
               if (data.status === 'success') {
-                      // 클라이언트 측에서 정확히 일치 + 상태 != '완료' 필터 적용
+                      // 클라이언트 측: 정확히 일치 + 상태 != '완료' 필터
                       const filtered = (data.data || []).filter(person => {
-                                const personDistrict = String(person['교구'] || '').trim();
-                                const personPasture  = String(person['목장'] || '').trim();
-                                const personName     = String(person['성명'] || '').trim();
-                                const personStatus   = String(person['상태'] || '').trim();
+                                const pDistrict = String(person['교구'] || '').trim();
+                                const pPasture  = String(person['목장'] || '').trim();
+                                const pName     = String(person['성명'] || '').trim();
+                                const pStatus   = String(person['상태'] || '').trim();
 
-                                // 상태가 '완료'인 경우 제외
-                                if (personStatus === '완료') return false;
+                                // 상태가 '완료'면 제외
+                                if (pStatus === '완료') return false;
 
-                                // 교구: 선택한 경우 정확히 일치
-                                if (district && personDistrict !== district) return false;
+                                // 교구 선택 시 정확히 일치
+                                if (district && pDistrict !== district) return false;
 
-                                // 목장: 선택한 경우 정확히 일치
-                                if (pasture && personPasture !== pasture) return false;
+                                // 목장 입력 시 정확히 일치
+                                if (pasture && pPasture !== pasture) return false;
 
-                                // 성명: 입력한 경우 정확히 일치
-                                if (name && personName !== name) return false;
+                                // 성명 입력 시 정확히 일치
+                                if (name && pName !== name) return false;
 
                                 return true;
                       });
@@ -592,7 +595,6 @@
                                     `;
               el.appendChild(item);
         });
-        // 애니메이션
         requestAnimationFrame(() => {
               el.querySelectorAll('.bar-fill').forEach(b => {
                       b.style.width = b.dataset.w;
@@ -628,17 +630,17 @@
           .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    // 기본값: 전체(빈 값) 라디오 선택
-    document.getElementById('d-all').checked = true;
-
-    // Enter 키로 검색
-    document.getElementById('s-name').addEventListener('keydown', e => {
-        if (e.key === 'Enter') doSearch();
+    // Enter 키로 검색 (목장/성명 필드)
+    ['s-pasture', 's-name'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', e => {
+              if (e.key === 'Enter') doSearch();
+        });
     });
   </script>
   </body>
 </html>html>
-  </script></option></option></label></label>
+  </script></label>
+        </label>
     </main>
   </nav></p></h1>
     </header>
