@@ -257,8 +257,12 @@ async function doSearch() {
   var district = getSelectedDistrict();
   var pasture  = document.getElementById('s-pasture').value.trim();
   var name     = document.getElementById('s-name').value.trim();
-  if (!district && !pasture && !name) {
-    showMsg('교구, 목장, 성명 중 하나 이상 선택 또는 입력해 주세요.');
+  var missing = [];
+  if (!district) missing.push('교구');
+  if (!pasture) missing.push('목장');
+  if (!name) missing.push('성명');
+  if (missing.length > 0) {
+    showWarn(missing.join(', ') + '을(를) 입력(선택)해 주세요.');
     return;
   }
   setLoading(true);
@@ -430,6 +434,11 @@ function showMsg(text) {
   var el = document.getElementById('msg');
   el.className = 'msg error';
   el.textContent = '❌ ' + text;
+}
+function showWarn(text) {
+var el = document.getElementById('msg');
+el.className = 'msg warn';
+el.textContent = '⚠️ ' + text;
 }
 function hideMsg() {
   var el = document.getElementById('msg');
