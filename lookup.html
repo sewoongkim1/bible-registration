@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>성경필사 신청 조회</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>성경필사 신청 조회</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --navy:   #1a3a6b;
-      --gold:   #c8a84b;
-      --cream:  #fdf8f0;
-      --white:  #ffffff;
-      --gray:   #6b7280;
-      --light:  #f3f0ea;
+      --navy: #1a3a6b;
+      --gold: #c8a84b;
+      --cream: #fdf8f0;
+      --white: #ffffff;
+      --gray: #6b7280;
+      --light: #f3f0ea;
       --border: #ddd6c8;
-      --error:  #c0392b;
+      --error: #c0392b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,6 +117,34 @@
       font-weight: 500;
       color: var(--navy);
       margin-bottom: 6px;
+    }
+
+    /* 라디오 버튼 스타일 */
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .radio-group input[type="radio"] {
+      display: none;
+    }
+    .radio-group label {
+      display: inline-block;
+      padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--cream);
+      margin-bottom: 0;
+    }
+    .radio-group input[type="radio"]:checked + label {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
     }
 
     select, input[type="text"] {
@@ -306,272 +334,314 @@
       font-size: 14px;
     }
     .no-result .icon { font-size: 36px; margin-bottom: 10px; }
-  </style>
-</head>
-<body>
+    </style>
+  </head>
+  <body>
 
-<header>
-  <div class="label">고척교회 · 성경필사 프로그램</div>
-  <h1>신청 조회</h1>
-  <p>신청 현황을 확인하세요</p>
-</header>
+    <header>
+      <div class="label">고척교회 · 성경필사 프로그램</div>div>
+      <h1>신청 조회</h1>
+    <p>신청 현황을 확인하세요</p>
+    </header>
+  
+  <nav>
+    <a href="index.html">✏️ 신청하기</a>a>
+    <a href="lookup.html" class="active">🔍 신청 조회</a>a>
+  </nav>
 
-<nav>
-  <a href="index.html">✏️ 신청하기</a>
-  <a href="lookup.html" class="active">🔍 신청 조회</a>
-</nav>
+    <main>
+      <!-- 검색 카드 -->
+      <div class="card">
+        <div class="card-title">조회 조건</div>div>
+        <p style="font-size:12px;color:var(--gray);margin-bottom:14px;">교구·목장·성명 중 하나 이상 선택하면 조회됩니다. (상태가 완료인 건은 제외됩니다)</p>
 
-<main>
-  <!-- 검색 카드 -->
-  <div class="card">
-    <div class="card-title">조회 조건</div>
-    <p style="font-size:12px;color:var(--gray);margin-bottom:14px;">교구·목장·성명 중 하나 이상 입력하면 조회됩니다.</p>
-
-    <div class="field">
-      <label>교구</label>
-      <div class="select-wrap">
-        <select id="s-district">
-          <option value="">전체 교구</option>
-          <option>1교구</option>
-          <option>2교구</option>
-          <option>3교구</option>
-          <option>4교구</option>
-          <option>5교구</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
+        <div class="field">
+          <label>교구</label>
+        <div class="radio-group">
+        <input type="radio" id="d-all" name="district" value="">
+        <label for="d-all">전체</label>
+        <input type="radio" id="d-1" name="district" value="1교구">
+        <label for="d-1">1교구</label>
+        <input type="radio" id="d-2" name="district" value="2교구">
+        <label for="d-2">2교구</label>
+        <input type="radio" id="d-3" name="district" value="3교구">
+        <label for="d-3">3교구</label>
+        <input type="radio" id="d-4" name="district" value="4교구">
+        <label for="d-4">4교구</label>
+        <input type="radio" id="d-5" name="district" value="5교구">
+        <label for="d-5">5교구</label>
+        </div>div>
+        </div>div>
+      
+      <div class="field">
       <label>목장</label>
       <div class="select-wrap">
-        <select id="s-pasture">
-          <option value="">전체 목장</option>
-          <option>믿음목장</option>
-          <option>소망목장</option>
-          <option>사랑목장</option>
-          <option>기쁨목장</option>
-          <option>평화목장</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
+      <select id="s-pasture">
+      <option value="">전체 목장</option>option>
+      <option>믿음목장</option>
+      <option>소망목장</option>
+      <option>사랑목장</option>
+      <option>기쁨목장</option>
+      <option>평화목장</option>
+      </select>select>
+      </div>div>
+      </div>div>
+      
+      <div class="field">
       <label>성명</label>
-      <input type="text" id="s-name" placeholder="이름 일부만 입력해도 검색됩니다" maxlength="10" />
-      <p class="hint">예) "홍" 입력 시 홍씨 성도 전체 조회</p>
-    </div>
-
-    <button class="btn-search" id="searchBtn" onclick="doSearch()">🔍 조회하기</button>
-    <button class="btn-stats" onclick="doStats()">📊 전체 신청 현황 보기</button>
-  </div>
-
-  <div class="loading" id="loading">⏳ 조회 중입니다...</div>
-  <div class="msg" id="msg"></div>
-
-  <!-- 검색 결과 -->
-  <div id="results">
+      <input type="text" id="s-name" placeholder="이름을 정확히 입력하세요" maxlength="10" />
+      <p class="hint">이름 전체를 정확히 입력해야 조회됩니다.</p>
+      </div>div>
+      
+      <button class="btn-search" id="searchBtn" onclick="doSearch()">🔍 조회하기</button>button>
+      <button class="btn-stats" onclick="doStats()">📊 전체 신청 현황 보기</button>button>
+      </div>div>
+    
+    <div class="loading" id="loading">⏳ 조회 중입니다...</div>div>
+    <div class="msg" id="msg"></div>div>
+    
+    <!-- 검색 결과 -->
+    <div id="results">
     <div class="result-header">
-      <div class="result-count">총 <strong id="resultCount">0</strong>명</div>
-    </div>
-    <div id="resultList"></div>
-  </div>
-
-  <!-- 통계 -->
-  <div id="statsArea">
+    <div class="result-count">총 <strong id="resultCount">0</strong>strong>명</div>div>
+    </div>div>
+    <div id="resultList"></div>div>
+    </div>div>
+    
+    <!-- 통계 -->
+    <div id="statsArea">
     <div class="card">
-      <div class="card-title">전체 신청 현황</div>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-label">총 신청자</div>
-          <div class="stat-value" id="st-total">-</div>
-        </div>
-      </div>
-    </div>
-
+    <div class="card-title">전체 신청 현황</div>div>
+    <div class="stats-grid">
+    <div class="stat-item">
+    <div class="stat-label">총 신청자</div>div>
+    <div class="stat-value" id="st-total">-</div>div>
+    </div>div>
+    </div>div>
+    </div>div>
+    
     <div class="card">
-      <div class="card-title">교구별 신청 현황</div>
-      <div class="bar-list" id="st-district"></div>
-    </div>
-
+    <div class="card-title">교구별 신청 현황</div>div>
+    <div class="bar-list" id="st-district"></div>div>
+    </div>div>
+    
     <div class="card">
-      <div class="card-title">성경 선택 현황</div>
-      <div class="bar-list" id="st-bible"></div>
-    </div>
-
+    <div class="card-title">성경 선택 현황</div>div>
+    <div class="bar-list" id="st-bible"></div>div>
+    </div>div>
+    
     <div class="card">
-      <div class="card-title">필사 유형 현황</div>
-      <div class="bar-list" id="st-type1"></div>
-    </div>
-  </div>
-</main>
+    <div class="card-title">필사 유형 현황</div>div>
+    <div class="bar-list" id="st-type1"></div>div>
+    </div>div>
+    </div>div>
+    </main>
+  
+  <script>
+    // ★ 여기에 Apps Script 웹 앱 URL을 입력하세요
+    const API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqywSQNZC8q6oQG0GbpQs7FyAl18hWNxjZKk4G3VXoH9UrDQ/exec';
 
-<script>
-  // ★ 여기에 Apps Script 웹 앱 URL을 입력하세요
-  const API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqywSQNZC8q6oQG0GbpQs7FyAl18hWNxjZKk4G3VXoH9UrDQ/exec';
-
-  async function doSearch() {
-    const district = document.getElementById('s-district').value;
-    const pasture  = document.getElementById('s-pasture').value;
-    const name     = document.getElementById('s-name').value.trim();
-
-    if (!district && !pasture && !name) {
-      showMsg('교구, 목장, 성명 중 하나 이상 입력해 주세요.');
-      return;
+    // 선택된 교구 라디오 값 반환
+    function getSelectedDistrict() {
+        const checked = document.querySelector('input[name="district"]:checked');
+        return checked ? checked.value : '';
     }
 
-    setLoading(true);
-    hideResults();
-    hideMsg();
+    async function doSearch() {
+        const district = getSelectedDistrict();
+        const pasture  = document.getElementById('s-pasture').value;
+        const name     = document.getElementById('s-name').value.trim();
 
-    try {
-      const params = new URLSearchParams({ action: 'lookup' });
-      if (district) params.append('교구', district);
-      if (pasture)  params.append('목장', pasture);
-      if (name)     params.append('성명', name);
+        if (!district && !pasture && !name) {
+              showMsg('교구, 목장, 성명 중 하나 이상 선택해 주세요.');
+              return;
+        }
 
-      const res = await fetch(`${API_URL}?${params}`);
-      const data = await res.json();
+        setLoading(true);
+        hideResults();
+        hideMsg();
 
-      if (data.status === 'success') {
-        renderResults(data.data);
-      } else {
-        showMsg(data.message || '조회 중 오류가 발생했습니다.');
-      }
-    } catch (err) {
-      showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
-    } finally {
-      setLoading(false);
-    }
-  }
+        try {
+              const params = new URLSearchParams({ action: 'lookup' });
+              if (district) params.append('교구', district);
+              if (pasture)  params.append('목장', pasture);
+              if (name)     params.append('성명', name);
 
-  async function doStats() {
-    setLoading(true);
-    hideResults();
-    hideMsg();
-    document.getElementById('statsArea').style.display = 'none';
+              const res  = await fetch(`${API_URL}?${params}`);
+              const data = await res.json();
 
-    try {
-      const res = await fetch(`${API_URL}?action=stats`);
-      const data = await res.json();
+              if (data.status === 'success') {
+                      // 클라이언트 측에서 정확히 일치 + 상태 != '완료' 필터 적용
+                      const filtered = (data.data || []).filter(person => {
+                                const personDistrict = String(person['교구'] || '').trim();
+                                const personPasture  = String(person['목장'] || '').trim();
+                                const personName     = String(person['성명'] || '').trim();
+                                const personStatus   = String(person['상태'] || '').trim();
 
-      if (data.status === 'success') {
-        renderStats(data);
-      } else {
-        showMsg(data.message || '통계 조회 중 오류가 발생했습니다.');
-      }
-    } catch (err) {
-      showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
-    } finally {
-      setLoading(false);
-    }
-  }
+                                // 상태가 '완료'인 경우 제외
+                                if (personStatus === '완료') return false;
 
-  function renderResults(list) {
-    const resultsEl = document.getElementById('results');
-    const countEl   = document.getElementById('resultCount');
-    const listEl    = document.getElementById('resultList');
+                                // 교구: 선택한 경우 정확히 일치
+                                if (district && personDistrict !== district) return false;
 
-    countEl.textContent = list.length;
-    listEl.innerHTML = '';
+                                // 목장: 선택한 경우 정확히 일치
+                                if (pasture && personPasture !== pasture) return false;
 
-    if (list.length === 0) {
-      listEl.innerHTML = `
-        <div class="no-result">
-          <div class="icon">📭</div>
-          <div>조회 결과가 없습니다.</div>
-        </div>`;
-    } else {
-      list.forEach(person => {
-        const card = document.createElement('div');
-        card.className = 'person-card';
-        card.innerHTML = `
-          <div class="person-name">${esc(person['성명'])}</div>
-          <div class="person-meta">
-            <span class="tag">${esc(person['교구'])}</span>
-            <span class="tag">${esc(person['목장'])}</span>
-            <span class="tag">${esc(person['직분'])}</span>
-            <span class="tag gold">${esc(person['성경선택'])}</span>
-            <span class="tag gold">${esc(person['선택유형2'])}</span>
-          </div>
-          <div class="person-meta" style="margin-top:6px">
-            <span class="tag">${esc(person['선택유형1'])}</span>
-          </div>
-          <div class="person-date">신청일: ${esc(person['타임스탬프'])}</div>
-        `;
-        listEl.appendChild(card);
-      });
+                                // 성명: 입력한 경우 정확히 일치
+                                if (name && personName !== name) return false;
+
+                                return true;
+                      });
+
+                      renderResults(filtered);
+              } else {
+                      showMsg(data.message || '조회 중 오류가 발생했습니다.');
+              }
+        } catch (err) {
+              showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+        } finally {
+              setLoading(false);
+        }
     }
 
-    resultsEl.style.display = 'block';
-  }
+    async function doStats() {
+        setLoading(true);
+        hideResults();
+        hideMsg();
+        document.getElementById('statsArea').style.display = 'none';
 
-  function renderStats(data) {
-    document.getElementById('st-total').textContent = data.total + '명';
-    renderBars('st-district', data.byDistrict, data.total);
-    renderBars('st-bible',    data.byBible,    data.total);
-    renderBars('st-type1',    data.byType1,    data.total);
-    document.getElementById('statsArea').style.display = 'block';
-  }
+        try {
+              const res  = await fetch(`${API_URL}?action=stats`);
+              const data = await res.json();
 
-  function renderBars(containerId, obj, total) {
-    const el = document.getElementById(containerId);
-    el.innerHTML = '';
-    if (!obj || Object.keys(obj).length === 0) {
-      el.innerHTML = '<div style="color:var(--gray);font-size:13px;">데이터 없음</div>';
-      return;
+              if (data.status === 'success') {
+                      renderStats(data);
+              } else {
+                      showMsg(data.message || '통계 조회 중 오류가 발생했습니다.');
+              }
+        } catch (err) {
+              showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+        } finally {
+              setLoading(false);
+        }
     }
-    const sorted = Object.entries(obj).sort((a, b) => b[1] - a[1]);
-    sorted.forEach(([label, count]) => {
-      const pct = total > 0 ? Math.round(count / total * 100) : 0;
-      const item = document.createElement('div');
-      item.className = 'bar-item';
-      item.innerHTML = `
-        <div class="bar-label">${esc(label)}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:0%" data-w="${pct}%"></div></div>
-        <div class="bar-count">${count}</div>
-      `;
-      el.appendChild(item);
+
+    function renderResults(list) {
+        const resultsEl = document.getElementById('results');
+        const countEl   = document.getElementById('resultCount');
+        const listEl    = document.getElementById('resultList');
+
+        countEl.textContent = list.length;
+        listEl.innerHTML = '';
+
+        if (list.length === 0) {
+              listEl.innerHTML = `
+                    <div class="no-result">
+                            <div class="icon">📭</div>
+                                    <div>조회 결과가 없습니다.</div>
+                                          </div>`;
+        } else {
+              list.forEach(person => {
+                      const card = document.createElement('div');
+                      card.className = 'person-card';
+                      card.innerHTML = `
+                              <div class="person-name">${esc(person['성명'])}</div>
+                                      <div class="person-meta">
+                                                <span class="tag">${esc(person['교구'])}</span>
+                                                          <span class="tag">${esc(person['목장'])}</span>
+                                                                    <span class="tag">${esc(person['직분'])}</span>
+                                                                              <span class="tag gold">${esc(person['성경선택'])}</span>
+                                                                                        <span class="tag gold">${esc(person['선택유형2'])}</span>
+                                                                                                </div>
+                                                                                                        <div class="person-meta" style="margin-top:6px">
+                                                                                                                  <span class="tag">${esc(person['선택유형1'])}</span>
+                                                                                                                          </div>
+                                                                                                                                  <div class="person-date">신청일: ${esc(person['타임스탬프'])}</div>
+                                                                                                                                        `;
+                      listEl.appendChild(card);
+              });
+        }
+
+        resultsEl.style.display = 'block';
+    }
+
+    function renderStats(data) {
+        document.getElementById('st-total').textContent = data.total + '명';
+        renderBars('st-district', data.byDistrict, data.total);
+        renderBars('st-bible', data.byBible, data.total);
+        renderBars('st-type1', data.byType1, data.total);
+        document.getElementById('statsArea').style.display = 'block';
+    }
+
+    function renderBars(containerId, obj, total) {
+        const el = document.getElementById(containerId);
+        el.innerHTML = '';
+        if (!obj || Object.keys(obj).length === 0) {
+              el.innerHTML = '<div style="color:var(--gray);font-size:13px;">데이터 없음</div>';
+              return;
+        }
+        const sorted = Object.entries(obj).sort((a, b) => b[1] - a[1]);
+        sorted.forEach(([label, count]) => {
+              const pct  = total > 0 ? Math.round(count / total * 100) : 0;
+              const item = document.createElement('div');
+              item.className = 'bar-item';
+              item.innerHTML = `
+                    <div class="bar-label">${esc(label)}</div>
+                          <div class="bar-track"><div class="bar-fill" style="width:0%" data-w="${pct}%"></div></div>
+                                <div class="bar-count">${count}</div>
+                                    `;
+              el.appendChild(item);
+        });
+        // 애니메이션
+        requestAnimationFrame(() => {
+              el.querySelectorAll('.bar-fill').forEach(b => {
+                      b.style.width = b.dataset.w;
+              });
+        });
+    }
+
+    function setLoading(on) {
+        const el = document.getElementById('loading');
+        const sb = document.getElementById('searchBtn');
+        el.className = 'loading' + (on ? ' show' : '');
+        sb.disabled = on;
+    }
+
+    function hideResults() {
+        document.getElementById('results').style.display = 'none';
+    }
+
+    function showMsg(text) {
+        const el = document.getElementById('msg');
+        el.className = 'msg error';
+        el.textContent = '❌ ' + text;
+    }
+
+    function hideMsg() {
+        const el = document.getElementById('msg');
+        el.className = 'msg';
+        el.textContent = '';
+    }
+
+    function esc(str) {
+        return String(str || '')
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // 기본값: 전체(빈 값) 라디오 선택
+    document.getElementById('d-all').checked = true;
+
+    // Enter 키로 검색
+    document.getElementById('s-name').addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
     });
-    // 애니메이션
-    requestAnimationFrame(() => {
-      el.querySelectorAll('.bar-fill').forEach(b => {
-        b.style.width = b.dataset.w;
-      });
-    });
-  }
-
-  function setLoading(on) {
-    const el = document.getElementById('loading');
-    const sb = document.getElementById('searchBtn');
-    el.className = 'loading' + (on ? ' show' : '');
-    sb.disabled = on;
-  }
-
-  function hideResults() {
-    document.getElementById('results').style.display = 'none';
-  }
-
-  function showMsg(text) {
-    const el = document.getElementById('msg');
-    el.className = 'msg error';
-    el.textContent = '❌ ' + text;
-  }
-
-  function hideMsg() {
-    const el = document.getElementById('msg');
-    el.className = 'msg';
-    el.textContent = '';
-  }
-
-  function esc(str) {
-    return String(str || '')
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  // Enter 키로 검색
-  document.getElementById('s-name').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doSearch();
-  });
-</script>
-</body>
-</html>
+  </script>
+  </body>
+</html>html>
+  </script></option></option></label></label>
+    </main>
+  </nav></p></h1>
+    </header>
+  </body>
+  </style></title>
+  </head>
