@@ -26,7 +26,7 @@ header p { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 8px; font-
 nav { display: flex; background: var(--white); border-bottom: 1px solid var(--border); }
 nav a { flex: 1; text-align: center; padding: 14px 0; font-size: 13px; font-weight: 500; color: var(--gray); text-decoration: none; border-bottom: 3px solid transparent; transition: all 0.2s; }
 nav a.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 700; }
-main { max-width: 480px; margin: 0 auto; padding: 24px 16px 60px; }
+main { max-width: 520px; margin: 0 auto; padding: 24px 16px 60px; }
 .card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(26,58,107,0.08); margin-bottom: 16px; }
 .card-title { font-family: 'Nanum Myeongjo', serif; font-size: 14px; color: var(--navy); font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
 .card-title::before { content: ''; display: inline-block; width: 4px; height: 14px; background: var(--gold); border-radius: 2px; }
@@ -56,19 +56,71 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
 .result-count { font-size: 13px; color: var(--gray); }
 .result-count strong { color: var(--navy); font-size: 16px; }
 
-/* ── 결과 카드 ── */
-.person-card { background: var(--white); border-radius: 10px; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(26,58,107,0.08); overflow: hidden; }
-.person-card-title { background: var(--navy); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-.person-card-name { font-family: 'Nanum Myeongjo', serif; font-size: 16px; font-weight: 700; color: var(--white); }
-.status-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-.status-badge.pending { background: #fff3cd; color: #856404; }
-.status-badge.inprogress { background: #cfe2ff; color: #084298; }
-.status-badge.other { background: rgba(255,255,255,0.2); color: var(--white); }
-.person-card-body { padding: 0; }
-.info-row { display: flex; align-items: flex-start; border-bottom: 1px solid var(--light); }
-.info-row:last-child { border-bottom: none; }
-.info-key { font-size: 12px; color: var(--gray); font-weight: 500; padding: 10px 12px; min-width: 72px; flex-shrink: 0; background: var(--light); }
-.info-val { font-size: 13px; color: #222; padding: 10px 12px; flex: 1; line-height: 1.5; }
+/* ── 결과 테이블 카드 ── */
+.person-card {
+  background: var(--white);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(26,58,107,0.09);
+  overflow: hidden;
+  border: 1px solid #e8e2d8;
+}
+
+/* 파스텔 타이틀 */
+.person-card-title {
+  background: linear-gradient(135deg, #dce8f8 0%, #e8d9f5 100%);
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #cfddf0;
+}
+.person-card-name {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1a3a6b;
+  letter-spacing: 0.5px;
+}
+
+/* 상태 배지 */
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.status-badge.pending  { background: #fff0c2; color: #7a5800; border: 1px solid #f0d060; }
+.status-badge.inprogress { background: #d0eaff; color: #0a4d8c; border: 1px solid #90c4f0; }
+.status-badge.other    { background: #e8e2f8; color: #4a3a7a; border: 1px solid #c8b8f0; }
+
+/* 테이블 */
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.info-table tr:nth-child(odd)  td { background: #f7f4ff; }
+.info-table tr:nth-child(even) td { background: #eef5ff; }
+.info-table tr:last-child td { border-bottom: none; }
+.info-table td {
+  padding: 9px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid #e4dff4;
+  vertical-align: middle;
+}
+.info-table td.key {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5a6a8a;
+  width: 76px;
+  white-space: nowrap;
+}
+.info-table td.val {
+  color: #1a2a40;
+  font-weight: 400;
+  line-height: 1.5;
+}
 
 /* ── 통계 카드 ── */
 #statsArea { display: none; }
@@ -165,14 +217,11 @@ function getSelectedDistrict() {
   return checked ? checked.value : '';
 }
 
-/* 타임스탬프 -> YYYY-MM-DD HH:MM */
 function fmtDate(raw) {
   if (!raw) return '';
   var s = String(raw).trim();
-  /* Google Sheets 형식: "2024. 5. 3 오후 2:30:00" 또는 ISO/슬래시 등 다양 */
   var d = new Date(s);
   if (isNaN(d.getTime())) {
-    /* "YYYY. M. D 오전/오후 H:MM:SS" 파싱 시도 */
     var m = s.match(/(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\s*(오전|오후)?\s*(\d{1,2}):(\d{2})/);
     if (m) {
       var h = parseInt(m[5], 10);
@@ -182,15 +231,14 @@ function fmtDate(raw) {
     }
   }
   if (isNaN(d.getTime())) return s;
-  var yy  = d.getFullYear();
-  var mo  = String(d.getMonth()+1).padStart(2,'0');
-  var dd  = String(d.getDate()).padStart(2,'0');
-  var hh  = String(d.getHours()).padStart(2,'0');
-  var mi  = String(d.getMinutes()).padStart(2,'0');
+  var yy = d.getFullYear();
+  var mo = String(d.getMonth()+1).padStart(2,'0');
+  var dd = String(d.getDate()).padStart(2,'0');
+  var hh = String(d.getHours()).padStart(2,'0');
+  var mi = String(d.getMinutes()).padStart(2,'0');
   return yy + '-' + mo + '-' + dd + ' ' + hh + ':' + mi;
 }
 
-/* 상태 배지 className 결정 */
 function statusClass(st) {
   if (!st) return 'other';
   if (st === '대기' || st === '접수') return 'pending';
@@ -260,17 +308,16 @@ async function doStats() {
 }
 
 function makeRow(key, val) {
-  var row  = document.createElement('div');
-  row.className = 'info-row';
-  var k = document.createElement('div');
-  k.className = 'info-key';
-  k.textContent = key;
-  var v = document.createElement('div');
-  v.className = 'info-val';
-  v.textContent = val || '-';
-  row.appendChild(k);
-  row.appendChild(v);
-  return row;
+  var tr  = document.createElement('tr');
+  var tdK = document.createElement('td');
+  tdK.className = 'key';
+  tdK.textContent = key;
+  var tdV = document.createElement('td');
+  tdV.className = 'val';
+  tdV.textContent = val || '-';
+  tr.appendChild(tdK);
+  tr.appendChild(tdV);
+  return tr;
 }
 
 function renderResults(list) {
@@ -295,11 +342,10 @@ function renderResults(list) {
     list.forEach(function(person) {
       var status = String(person['상태'] || '').trim();
 
-      /* 카드 */
       var card = document.createElement('div');
       card.className = 'person-card';
 
-      /* 타이틀 영역 */
+      /* 파스텔 타이틀 */
       var titleBar = document.createElement('div');
       titleBar.className = 'person-card-title';
 
@@ -314,20 +360,22 @@ function renderResults(list) {
       titleBar.appendChild(nameEl);
       titleBar.appendChild(badge);
 
-      /* 바디 영역 */
-      var body = document.createElement('div');
-      body.className = 'person-card-body';
+      /* 테이블 바디 */
+      var table = document.createElement('table');
+      table.className = 'info-table';
+      var tbody = document.createElement('tbody');
 
-      body.appendChild(makeRow('교구', person['교구']));
-      body.appendChild(makeRow('목장', person['목장']));
-      body.appendChild(makeRow('직분', person['직분']));
-      body.appendChild(makeRow('성경선택', person['성경선택']));
-      body.appendChild(makeRow('필사유형', person['선택유형1']));
-      body.appendChild(makeRow('번역본', person['선택유형2']));
-      body.appendChild(makeRow('신청일', fmtDate(person['타임스탬프'])));
+      tbody.appendChild(makeRow('교구',    person['교구']));
+      tbody.appendChild(makeRow('목장',    person['목장']));
+      tbody.appendChild(makeRow('직분',    person['직분']));
+      tbody.appendChild(makeRow('성경선택', person['성경선택']));
+      tbody.appendChild(makeRow('필사유형', person['선택유형1']));
+      tbody.appendChild(makeRow('번역본',  person['선택유형2']));
+      tbody.appendChild(makeRow('신청일',  fmtDate(person['타임스탬프'])));
 
+      table.appendChild(tbody);
       card.appendChild(titleBar);
-      card.appendChild(body);
+      card.appendChild(table);
       listEl.appendChild(card);
     });
   }
@@ -345,39 +393,23 @@ function renderStats(data) {
 function renderBars(containerId, obj, total) {
   var el = document.getElementById(containerId);
   el.innerHTML = '';
-  if (!obj || Object.keys(obj).length === 0) {
-    el.textContent = '데이터 없음';
-    return;
-  }
-  Object.entries(obj).sort(function(a, b) { return b[1] - a[1]; }).forEach(function(entry) {
-    var pct  = total > 0 ? Math.round(entry[1] / total * 100) : 0;
-    var item = document.createElement('div');
-    item.className = 'bar-item';
-    var lbl = document.createElement('div');
-    lbl.className = 'bar-label';
-    lbl.textContent = entry[0];
-    var track = document.createElement('div');
-    track.className = 'bar-track';
-    var fill = document.createElement('div');
-    fill.className = 'bar-fill';
-    fill.style.width = '0%';
-    fill.dataset.w = pct + '%';
+  if (!obj || Object.keys(obj).length === 0) { el.textContent = '데이터 없음'; return; }
+  Object.entries(obj).sort(function(a,b){return b[1]-a[1];}).forEach(function(entry) {
+    var pct  = total > 0 ? Math.round(entry[1]/total*100) : 0;
+    var item = document.createElement('div'); item.className = 'bar-item';
+    var lbl  = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = entry[0];
+    var track= document.createElement('div'); track.className = 'bar-track';
+    var fill = document.createElement('div'); fill.className = 'bar-fill'; fill.style.width='0%'; fill.dataset.w=pct+'%';
     track.appendChild(fill);
-    var cnt = document.createElement('div');
-    cnt.className = 'bar-count';
-    cnt.textContent = entry[1];
-    item.appendChild(lbl);
-    item.appendChild(track);
-    item.appendChild(cnt);
+    var cnt  = document.createElement('div'); cnt.className = 'bar-count'; cnt.textContent = entry[1];
+    item.appendChild(lbl); item.appendChild(track); item.appendChild(cnt);
     el.appendChild(item);
   });
-  requestAnimationFrame(function() {
-    el.querySelectorAll('.bar-fill').forEach(function(b) { b.style.width = b.dataset.w; });
-  });
+  requestAnimationFrame(function(){ el.querySelectorAll('.bar-fill').forEach(function(b){b.style.width=b.dataset.w;}); });
 }
 
 function setLoading(on) {
-  document.getElementById('loading').className = 'loading' + (on ? ' show' : '');
+  document.getElementById('loading').className = 'loading'+(on?' show':'');
   document.getElementById('searchBtn').disabled = on;
 }
 function hideResults() {
@@ -394,10 +426,8 @@ function hideMsg() {
   el.className = 'msg';
   el.textContent = '';
 }
-['s-pasture', 's-name'].forEach(function(id) {
-  document.getElementById(id).addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doSearch();
-  });
+['s-pasture','s-name'].forEach(function(id){
+  document.getElementById(id).addEventListener('keydown',function(e){ if(e.key==='Enter') doSearch(); });
 });
 </script>
 </body>
