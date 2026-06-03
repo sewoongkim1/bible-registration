@@ -49,16 +49,28 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
 .loading.show { display: block; }
 .msg { display: none; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.6; margin-top: 14px; text-align: center; }
 .msg.error { display: block; background: #fdedec; border: 1px solid #f5b7b1; color: var(--error); }
+
+/* ── 결과 영역 ── */
 #results { display: none; }
 .result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .result-count { font-size: 13px; color: var(--gray); }
 .result-count strong { color: var(--navy); font-size: 16px; }
-.person-card { background: var(--white); border-radius: 10px; padding: 16px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(26,58,107,0.06); border-left: 4px solid var(--gold); }
-.person-name { font-family: 'Nanum Myeongjo', serif; font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-.person-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag { background: var(--light); color: var(--navy); font-size: 11px; padding: 4px 9px; border-radius: 20px; font-weight: 500; }
-.tag.gold { background: #fdf3dc; color: #7d5a00; }
-.person-date { font-size: 11px; color: var(--gray); margin-top: 8px; }
+
+/* ── 결과 카드 ── */
+.person-card { background: var(--white); border-radius: 10px; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(26,58,107,0.08); overflow: hidden; }
+.person-card-title { background: var(--navy); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+.person-card-name { font-family: 'Nanum Myeongjo', serif; font-size: 16px; font-weight: 700; color: var(--white); }
+.status-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.status-badge.pending { background: #fff3cd; color: #856404; }
+.status-badge.inprogress { background: #cfe2ff; color: #084298; }
+.status-badge.other { background: rgba(255,255,255,0.2); color: var(--white); }
+.person-card-body { padding: 0; }
+.info-row { display: flex; align-items: flex-start; border-bottom: 1px solid var(--light); }
+.info-row:last-child { border-bottom: none; }
+.info-key { font-size: 12px; color: var(--gray); font-weight: 500; padding: 10px 12px; min-width: 72px; flex-shrink: 0; background: var(--light); }
+.info-val { font-size: 13px; color: #222; padding: 10px 12px; flex: 1; line-height: 1.5; }
+
+/* ── 통계 카드 ── */
 #statsArea { display: none; }
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
 .stat-item { background: var(--light); border-radius: 8px; padding: 12px; text-align: center; }
@@ -91,7 +103,6 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
     <div class="field">
       <label>교구</label>
       <div class="chip-group">
-        <label class="chip-label"><input type="radio" name="district" value="" checked /><span class="chip">전체</span></label>
         <label class="chip-label"><input type="radio" name="district" value="믿음" /><span class="chip">믿음</span></label>
         <label class="chip-label"><input type="radio" name="district" value="소망" /><span class="chip">소망</span></label>
         <label class="chip-label"><input type="radio" name="district" value="사랑" /><span class="chip">사랑</span></label>
@@ -152,6 +163,39 @@ var API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqyw
 function getSelectedDistrict() {
   var checked = document.querySelector('input[name="district"]:checked');
   return checked ? checked.value : '';
+}
+
+/* 타임스탬프 -> YYYY-MM-DD HH:MM */
+function fmtDate(raw) {
+  if (!raw) return '';
+  var s = String(raw).trim();
+  /* Google Sheets 형식: "2024. 5. 3 오후 2:30:00" 또는 ISO/슬래시 등 다양 */
+  var d = new Date(s);
+  if (isNaN(d.getTime())) {
+    /* "YYYY. M. D 오전/오후 H:MM:SS" 파싱 시도 */
+    var m = s.match(/(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\s*(오전|오후)?\s*(\d{1,2}):(\d{2})/);
+    if (m) {
+      var h = parseInt(m[5], 10);
+      if (m[4] === '오후' && h < 12) h += 12;
+      if (m[4] === '오전' && h === 12) h = 0;
+      d = new Date(parseInt(m[1],10), parseInt(m[2],10)-1, parseInt(m[3],10), h, parseInt(m[6],10));
+    }
+  }
+  if (isNaN(d.getTime())) return s;
+  var yy  = d.getFullYear();
+  var mo  = String(d.getMonth()+1).padStart(2,'0');
+  var dd  = String(d.getDate()).padStart(2,'0');
+  var hh  = String(d.getHours()).padStart(2,'0');
+  var mi  = String(d.getMinutes()).padStart(2,'0');
+  return yy + '-' + mo + '-' + dd + ' ' + hh + ':' + mi;
+}
+
+/* 상태 배지 className 결정 */
+function statusClass(st) {
+  if (!st) return 'other';
+  if (st === '대기' || st === '접수') return 'pending';
+  if (st === '진행중' || st === '처리중') return 'inprogress';
+  return 'other';
 }
 
 async function doSearch() {
@@ -215,12 +259,27 @@ async function doStats() {
   }
 }
 
+function makeRow(key, val) {
+  var row  = document.createElement('div');
+  row.className = 'info-row';
+  var k = document.createElement('div');
+  k.className = 'info-key';
+  k.textContent = key;
+  var v = document.createElement('div');
+  v.className = 'info-val';
+  v.textContent = val || '-';
+  row.appendChild(k);
+  row.appendChild(v);
+  return row;
+}
+
 function renderResults(list) {
   var resultsEl = document.getElementById('results');
   var countEl   = document.getElementById('resultCount');
   var listEl    = document.getElementById('resultList');
   countEl.textContent = list.length;
   listEl.innerHTML = '';
+
   if (list.length === 0) {
     var noEl = document.createElement('div');
     noEl.className = 'no-result';
@@ -234,43 +293,41 @@ function renderResults(list) {
     listEl.appendChild(noEl);
   } else {
     list.forEach(function(person) {
+      var status = String(person['상태'] || '').trim();
+
+      /* 카드 */
       var card = document.createElement('div');
       card.className = 'person-card';
-      var nm = document.createElement('div');
-      nm.className = 'person-name';
-      nm.textContent = person['성명'] || '';
-      var mt1 = document.createElement('div');
-      mt1.className = 'person-meta';
-      [
-        { v: person['교구'],      c: 'tag' },
-        { v: person['목장'],      c: 'tag' },
-        { v: person['직분'],      c: 'tag' },
-        { v: person['성경선택'],  c: 'tag gold' },
-        { v: person['선택유형2'], c: 'tag gold' }
-      ].forEach(function(t) {
-        if (t.v) {
-          var sp = document.createElement('span');
-          sp.className = t.c;
-          sp.textContent = t.v;
-          mt1.appendChild(sp);
-        }
-      });
-      var mt2 = document.createElement('div');
-      mt2.className = 'person-meta';
-      mt2.style.marginTop = '6px';
-      if (person['선택유형1']) {
-        var sp2 = document.createElement('span');
-        sp2.className = 'tag';
-        sp2.textContent = person['선택유형1'];
-        mt2.appendChild(sp2);
-      }
-      var dt = document.createElement('div');
-      dt.className = 'person-date';
-      dt.textContent = '신청일: ' + (person['타임스탬프'] || '');
-      card.appendChild(nm);
-      card.appendChild(mt1);
-      card.appendChild(mt2);
-      card.appendChild(dt);
+
+      /* 타이틀 영역 */
+      var titleBar = document.createElement('div');
+      titleBar.className = 'person-card-title';
+
+      var nameEl = document.createElement('div');
+      nameEl.className = 'person-card-name';
+      nameEl.textContent = person['성명'] || '(이름 없음)';
+
+      var badge = document.createElement('span');
+      badge.className = 'status-badge ' + statusClass(status);
+      badge.textContent = status || '상태없음';
+
+      titleBar.appendChild(nameEl);
+      titleBar.appendChild(badge);
+
+      /* 바디 영역 */
+      var body = document.createElement('div');
+      body.className = 'person-card-body';
+
+      body.appendChild(makeRow('교구', person['교구']));
+      body.appendChild(makeRow('목장', person['목장']));
+      body.appendChild(makeRow('직분', person['직분']));
+      body.appendChild(makeRow('성경선택', person['성경선택']));
+      body.appendChild(makeRow('필사유형', person['선택유형1']));
+      body.appendChild(makeRow('번역본', person['선택유형2']));
+      body.appendChild(makeRow('신청일', fmtDate(person['타임스탬프'])));
+
+      card.appendChild(titleBar);
+      card.appendChild(body);
       listEl.appendChild(card);
     });
   }
@@ -323,7 +380,10 @@ function setLoading(on) {
   document.getElementById('loading').className = 'loading' + (on ? ' show' : '');
   document.getElementById('searchBtn').disabled = on;
 }
-function hideResults() { document.getElementById('results').style.display = 'none'; }
+function hideResults() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('statsArea').style.display = 'none';
+}
 function showMsg(text) {
   var el = document.getElementById('msg');
   el.className = 'msg error';
