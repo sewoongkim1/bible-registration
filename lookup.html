@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>성경필사 신청 조회</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:   #1a3a6b;
+      --gold:   #c8a84b;
+      --cream:  #fdf8f0;
+      --white:  #ffffff;
+      --gray:   #6b7280;
+      --light:  #f3f0ea;
+      --border: #ddd6c8;
+      --error:  #c0392b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--cream);
+      color: #222;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 24px 20px 20px;
+      text-align: center;
+    }
+    header .label {
+      font-family: 'Nanum Myeongjo', serif;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+    header h1 {
+      font-family: 'Nanum Myeongjo', serif;
+      color: var(--white);
+      font-size: 22px;
+      font-weight: 800;
+    }
+    header p {
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      margin-top: 8px;
+      font-weight: 300;
+    }
+
+    nav {
+      display: flex;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+    nav a {
+      flex: 1;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    nav a.active {
+      color: var(--navy);
+      border-bottom-color: var(--gold);
+      font-weight: 700;
+    }
+
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(26,58,107,0.08);
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 14px;
+      color: var(--navy);
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 14px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: #222;
+      background: var(--cream);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    select:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--navy);
+      background: var(--white);
+    }
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      pointer-events: none;
+    }
+
+    .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
+
+    .btn-search {
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+    .btn-search:disabled { background: var(--gray); cursor: not-allowed; }
+
+    .btn-stats {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: var(--navy);
+      border: 1.5px solid var(--navy);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+    .btn-stats:hover { background: var(--navy); color: var(--white); }
+
+    .loading { display: none; text-align: center; padding: 12px; color: var(--gray); font-size: 13px; }
+    .loading.show { display: block; }
+
+    .msg {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 14px;
+      text-align: center;
+    }
+    .msg.error {
+      display: block;
+      background: #fdedec;
+      border: 1px solid #f5b7b1;
+      color: var(--error);
+    }
+
+    /* ── 결과 영역 ── */
+    #results { display: none; }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .result-count {
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .result-count strong {
+      color: var(--navy);
+      font-size: 16px;
+    }
+
+    /* ── 신청자 카드 ── */
+    .person-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 6px rgba(26,58,107,0.06);
+      border-left: 4px solid var(--gold);
+    }
+    .person-name {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .person-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      background: var(--light);
+      color: var(--navy);
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .tag.gold {
+      background: #fdf3dc;
+      color: #7d5a00;
+    }
+    .person-date {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 8px;
+    }
+
+    /* ── 통계 카드 ── */
+    #statsArea { display: none; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .stat-item {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .stat-label { font-size: 11px; color: var(--gray); margin-bottom: 4px; }
+    .stat-value { font-size: 22px; font-weight: 700; color: var(--navy); font-family: 'Nanum Myeongjo', serif; }
+
+    .bar-list { margin-top: 8px; }
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .bar-label { font-size: 12px; color: #333; min-width: 70px; }
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: var(--navy);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    .bar-count { font-size: 12px; color: var(--gray); min-width: 24px; text-align: right; }
+
+    .no-result {
+      text-align: center;
+      padding: 32px 0;
+      color: var(--gray);
+      font-size: 14px;
+    }
+    .no-result .icon { font-size: 36px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="label">고척교회 · 성경필사 프로그램</div>
+  <h1>신청 조회</h1>
+  <p>신청 현황을 확인하세요</p>
+</header>
+
+<nav>
+  <a href="index.html">✏️ 신청하기</a>
+  <a href="lookup.html" class="active">🔍 신청 조회</a>
+</nav>
+
+<main>
+  <!-- 검색 카드 -->
+  <div class="card">
+    <div class="card-title">조회 조건</div>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:14px;">교구·목장·성명 중 하나 이상 입력하면 조회됩니다.</p>
+
+    <div class="field">
+      <label>교구</label>
+      <div class="select-wrap">
+        <select id="s-district">
+          <option value="">전체 교구</option>
+          <option>1교구</option>
+          <option>2교구</option>
+          <option>3교구</option>
+          <option>4교구</option>
+          <option>5교구</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>목장</label>
+      <div class="select-wrap">
+        <select id="s-pasture">
+          <option value="">전체 목장</option>
+          <option>믿음목장</option>
+          <option>소망목장</option>
+          <option>사랑목장</option>
+          <option>기쁨목장</option>
+          <option>평화목장</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>성명</label>
+      <input type="text" id="s-name" placeholder="이름 일부만 입력해도 검색됩니다" maxlength="10" />
+      <p class="hint">예) "홍" 입력 시 홍씨 성도 전체 조회</p>
+    </div>
+
+    <button class="btn-search" id="searchBtn" onclick="doSearch()">🔍 조회하기</button>
+    <button class="btn-stats" onclick="doStats()">📊 전체 신청 현황 보기</button>
+  </div>
+
+  <div class="loading" id="loading">⏳ 조회 중입니다...</div>
+  <div class="msg" id="msg"></div>
+
+  <!-- 검색 결과 -->
+  <div id="results">
+    <div class="result-header">
+      <div class="result-count">총 <strong id="resultCount">0</strong>명</div>
+    </div>
+    <div id="resultList"></div>
+  </div>
+
+  <!-- 통계 -->
+  <div id="statsArea">
+    <div class="card">
+      <div class="card-title">전체 신청 현황</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">총 신청자</div>
+          <div class="stat-value" id="st-total">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">교구별 신청 현황</div>
+      <div class="bar-list" id="st-district"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">성경 선택 현황</div>
+      <div class="bar-list" id="st-bible"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">필사 유형 현황</div>
+      <div class="bar-list" id="st-type1"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // ★ 여기에 Apps Script 웹 앱 URL을 입력하세요
+  const API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqywSQNZC8q6oQG0GbpQs7FyAl18hWNxjZKk4G3VXoH9UrDQ/exec';
+
+  async function doSearch() {
+    const district = document.getElementById('s-district').value;
+    const pasture  = document.getElementById('s-pasture').value;
+    const name     = document.getElementById('s-name').value.trim();
+
+    if (!district && !pasture && !name) {
+      showMsg('교구, 목장, 성명 중 하나 이상 입력해 주세요.');
+      return;
+    }
+
+    setLoading(true);
+    hideResults();
+    hideMsg();
+
+    try {
+      const params = new URLSearchParams({ action: 'lookup' });
+      if (district) params.append('교구', district);
+      if (pasture)  params.append('목장', pasture);
+      if (name)     params.append('성명', name);
+
+      const res = await fetch(`${API_URL}?${params}`);
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        renderResults(data.data);
+      } else {
+        showMsg(data.message || '조회 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function doStats() {
+    setLoading(true);
+    hideResults();
+    hideMsg();
+    document.getElementById('statsArea').style.display = 'none';
+
+    try {
+      const res = await fetch(`${API_URL}?action=stats`);
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        renderStats(data);
+      } else {
+        showMsg(data.message || '통계 조회 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function renderResults(list) {
+    const resultsEl = document.getElementById('results');
+    const countEl   = document.getElementById('resultCount');
+    const listEl    = document.getElementById('resultList');
+
+    countEl.textContent = list.length;
+    listEl.innerHTML = '';
+
+    if (list.length === 0) {
+      listEl.innerHTML = `
+        <div class="no-result">
+          <div class="icon">📭</div>
+          <div>조회 결과가 없습니다.</div>
+        </div>`;
+    } else {
+      list.forEach(person => {
+        const card = document.createElement('div');
+        card.className = 'person-card';
+        card.innerHTML = `
+          <div class="person-name">${esc(person['성명'])}</div>
+          <div class="person-meta">
+            <span class="tag">${esc(person['교구'])}</span>
+            <span class="tag">${esc(person['목장'])}</span>
+            <span class="tag">${esc(person['직분'])}</span>
+            <span class="tag gold">${esc(person['성경선택'])}</span>
+            <span class="tag gold">${esc(person['선택유형2'])}</span>
+          </div>
+          <div class="person-meta" style="margin-top:6px">
+            <span class="tag">${esc(person['선택유형1'])}</span>
+          </div>
+          <div class="person-date">신청일: ${esc(person['타임스탬프'])}</div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    resultsEl.style.display = 'block';
+  }
+
+  function renderStats(data) {
+    document.getElementById('st-total').textContent = data.total + '명';
+    renderBars('st-district', data.byDistrict, data.total);
+    renderBars('st-bible',    data.byBible,    data.total);
+    renderBars('st-type1',    data.byType1,    data.total);
+    document.getElementById('statsArea').style.display = 'block';
+  }
+
+  function renderBars(containerId, obj, total) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    if (!obj || Object.keys(obj).length === 0) {
+      el.innerHTML = '<div style="color:var(--gray);font-size:13px;">데이터 없음</div>';
+      return;
+    }
+    const sorted = Object.entries(obj).sort((a, b) => b[1] - a[1]);
+    sorted.forEach(([label, count]) => {
+      const pct = total > 0 ? Math.round(count / total * 100) : 0;
+      const item = document.createElement('div');
+      item.className = 'bar-item';
+      item.innerHTML = `
+        <div class="bar-label">${esc(label)}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:0%" data-w="${pct}%"></div></div>
+        <div class="bar-count">${count}</div>
+      `;
+      el.appendChild(item);
+    });
+    // 애니메이션
+    requestAnimationFrame(() => {
+      el.querySelectorAll('.bar-fill').forEach(b => {
+        b.style.width = b.dataset.w;
+      });
+    });
+  }
+
+  function setLoading(on) {
+    const el = document.getElementById('loading');
+    const sb = document.getElementById('searchBtn');
+    el.className = 'loading' + (on ? ' show' : '');
+    sb.disabled = on;
+  }
+
+  function hideResults() {
+    document.getElementById('results').style.display = 'none';
+  }
+
+  function showMsg(text) {
+    const el = document.getElementById('msg');
+    el.className = 'msg error';
+    el.textContent = '❌ ' + text;
+  }
+
+  function hideMsg() {
+    const el = document.getElementById('msg');
+    el.className = 'msg';
+    el.textContent = '';
+  }
+
+  function esc(str) {
+    return String(str || '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Enter 키로 검색
+  document.getElementById('s-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+</script>
+</body>
+</html>
