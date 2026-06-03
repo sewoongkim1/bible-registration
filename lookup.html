@@ -66,36 +66,67 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
   border: 1px solid var(--border);
 }
 
-/* 네이비 타이틀 */
-.person-card-title {
+/* 네이비 타이틀 바 */
+.person-card-header {
   background: var(--navy);
-  padding: 12px 16px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.person-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* 이름 섹션 — 타이틀과 분리된 흰 배경 영역 */
+.person-card-name-row {
+  background: var(--white);
+  padding: 12px 16px 11px;
+  border-bottom: 2px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .person-card-name {
   font-family: 'Nanum Myeongjo', serif;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
-  color: var(--white);
-  letter-spacing: 0.5px;
+  color: var(--navy);
 }
 
 /* 상태 배지 */
 .status-badge { font-size: 11px; font-weight: 700; padding: 4px 11px; border-radius: 20px; letter-spacing: 0.3px; }
-.status-badge.pending    { background: #fff0c2; color: #7a5800; border: 1px solid #f0d060; }
-.status-badge.inprogress { background: #d0eaff; color: #0a4d8c; border: 1px solid #90c4f0; }
-.status-badge.other      { background: rgba(255,255,255,0.15); color: var(--white); border: 1px solid rgba(255,255,255,0.35); }
+.status-badge.pending    { background: #fff8e1; color: #7a5800; border: 1px solid #f0d060; }
+.status-badge.inprogress { background: #e3f2fd; color: #0a4d8c; border: 1px solid #90c4f0; }
+.status-badge.other      { background: var(--light); color: var(--gray); border: 1px solid var(--border); }
 
-/* 테이블 */
+/* 테이블 — 배경색 없이 라인만 */
 .info-table { width: 100%; border-collapse: collapse; }
-.info-table tr:nth-child(odd)  td { background: var(--white); }
-.info-table tr:nth-child(even) td { background: var(--light); }
 .info-table tr:last-child td { border-bottom: none; }
-.info-table td { padding: 9px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-.info-table td.key { font-size: 12px; font-weight: 600; color: var(--gray); width: 76px; white-space: nowrap; }
-.info-table td.val { color: #1a2a40; font-weight: 400; line-height: 1.5; }
+.info-table td {
+  padding: 10px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  background: var(--white);
+}
+.info-table td.key {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  width: 76px;
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+.info-table td.val {
+  color: #1a2a40;
+  font-weight: 400;
+  line-height: 1.5;
+}
 
 /* ── 통계 카드 ── */
 #statsArea { display: none; }
@@ -318,17 +349,27 @@ function renderResults(list) {
       var card   = document.createElement('div');
       card.className = 'person-card';
 
-      var titleBar = document.createElement('div');
-      titleBar.className = 'person-card-title';
-      var nameEl = document.createElement('div');
-      nameEl.className = 'person-card-name';
-      nameEl.textContent = person['성명'] || '(이름 없음)';
+      /* 네이비 타이틀 바 (신청자 라벨만) */
+      var header = document.createElement('div');
+      header.className = 'person-card-header';
+      var lbl = document.createElement('span');
+      lbl.className = 'person-card-label';
+      lbl.textContent = '신청자 정보';
       var badge = document.createElement('span');
       badge.className = 'status-badge ' + statusClass(status);
       badge.textContent = status || '상태없음';
-      titleBar.appendChild(nameEl);
-      titleBar.appendChild(badge);
+      header.appendChild(lbl);
+      header.appendChild(badge);
 
+      /* 이름 섹션 — 흰 배경으로 타이틀과 분리 */
+      var nameRow = document.createElement('div');
+      nameRow.className = 'person-card-name-row';
+      var nameEl = document.createElement('span');
+      nameEl.className = 'person-card-name';
+      nameEl.textContent = person['성명'] || '(이름 없음)';
+      nameRow.appendChild(nameEl);
+
+      /* 테이블 */
       var table = document.createElement('table');
       table.className = 'info-table';
       var tbody = document.createElement('tbody');
@@ -341,7 +382,8 @@ function renderResults(list) {
       tbody.appendChild(makeRow('신청일',  fmtDate(person['타임스탬프'])));
       table.appendChild(tbody);
 
-      card.appendChild(titleBar);
+      card.appendChild(header);
+      card.appendChild(nameRow);
       card.appendChild(table);
       listEl.appendChild(card);
     });
