@@ -43,7 +43,7 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
 .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
 .btn-search { width: 100%; padding: 14px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
 .btn-search:disabled { background: var(--gray); cursor: not-allowed; }
-.btn-stats { width: 100%; padding: 12px; background: transparent; color: var(--navy); border: 1.5px solid var(--navy); border-radius: 10px; font-size: 13px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
+.btn-stats { display: none; width: 100%; padding: 12px; background: transparent; color: var(--navy); border: 1.5px solid var(--navy); border-radius: 10px; font-size: 13px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
 .btn-stats:hover { background: var(--navy); color: var(--white); }
 .loading { display: none; text-align: center; padding: 12px; color: var(--gray); font-size: 13px; }
 .loading.show { display: block; }
@@ -181,7 +181,7 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
       <p class="hint">이름 전체를 정확히 입력해야 조회됩니다.</p>
     </div>
     <button class="btn-search" id="searchBtn" onclick="doSearch()">🔍 조회하기</button>
-    <button class="btn-stats" onclick="doStats()">📊 전체 신청 현황 보기</button>
+    <button class="btn-stats" onclick="doStats()" style="display:none">📊 전체 신청 현황 보기</button>
   </div>
   <div class="loading" id="loading">⏳ 조회 중입니다...</div>
   <div class="msg" id="msg"></div>
