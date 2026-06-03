@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>성경필사 신청</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:  #1a3a6b;
+      --gold:  #c8a84b;
+      --cream: #fdf8f0;
+      --white: #ffffff;
+      --gray:  #6b7280;
+      --light: #f3f0ea;
+      --border:#ddd6c8;
+      --error: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--cream); color: #222; min-height: 100vh; }
+
+    header { background: var(--navy); padding: 24px 20px 20px; text-align: center; }
+    header .label { font-family: 'Nanum Myeongjo', serif; color: var(--gold); font-size: 11px; letter-spacing: 3px; margin-bottom: 8px; }
+    header h1 { font-family: 'Nanum Myeongjo', serif; color: var(--white); font-size: 22px; font-weight: 800; }
+    header p { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 8px; font-weight: 300; }
+
+    nav { display: flex; background: var(--white); border-bottom: 1px solid var(--border); }
+    nav a { flex: 1; text-align: center; padding: 14px 0; font-size: 13px; font-weight: 500; color: var(--gray); text-decoration: none; border-bottom: 3px solid transparent; }
+    nav a.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 700; }
+
+    main { max-width: 480px; margin: 0 auto; padding: 20px 16px 60px; }
+
+    .card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(26,58,107,0.08); margin-bottom: 14px; }
+    .card-title { font-family: 'Nanum Myeongjo', serif; font-size: 14px; color: var(--navy); font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .card-title::before { content: ''; display: inline-block; width: 4px; height: 14px; background: var(--gold); border-radius: 2px; }
+
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+    .field-label .req { color: var(--gold); margin-left: 2px; }
+
+    /* ── 텍스트 입력 ── */
+    input[type="text"], textarea {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif;
+      color: #222; background: var(--cream); transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--navy); background: var(--white); }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+    /* ── 라디오 칩 (공통) ── */
+    .chip-group { display: flex; gap: 7px; flex-wrap: wrap; }
+    .chip-group input[type="radio"] { display: none; }
+    .chip-group .chip-label { cursor: pointer; }
+    .chip-group .chip {
+      display: inline-block; padding: 8px 14px;
+      border: 1.5px solid var(--border); border-radius: 20px;
+      font-size: 13px; color: var(--gray); background: var(--cream);
+      transition: all 0.15s; white-space: nowrap; font-weight: 400;
+    }
+    .chip-group input[type="radio"]:checked + .chip {
+      border-color: var(--navy); background: var(--navy);
+      color: var(--white); font-weight: 600;
+    }
+
+    /* ── 필사 유형 (2열 큰 버튼) ── */
+    .type-group { display: flex; gap: 8px; }
+    .type-group input[type="radio"] { display: none; }
+    .type-group .type-label { flex: 1; cursor: pointer; }
+    .type-group .type-btn {
+      display: block; padding: 12px 8px; text-align: center;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 13px; color: var(--gray); background: var(--cream);
+      transition: all 0.15s; line-height: 1.5;
+    }
+    .type-group input[type="radio"]:checked + .type-btn {
+      border-color: var(--navy); background: var(--navy);
+      color: var(--white); font-weight: 600;
+    }
+
+    /* ── 성경 탭 ── */
+    .testament-tabs { display: flex; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--border); margin-bottom: 14px; }
+    .testament-tab { flex: 1; padding: 11px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--cream); color: var(--gray); border: none; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+    .testament-tab.active { background: var(--navy); color: var(--white); font-weight: 700; }
+
+    .testament-panel { display: none; }
+    .testament-panel.active { display: block; }
+
+    /* ── 신청 단위 행 ── */
+    .unit-row { display: flex; align-items: center; gap: 10px; padding: 10px 2px; border-bottom: 1px solid var(--light); }
+    .unit-row:last-child { border-bottom: none; }
+    .unit-name { flex: 1; font-size: 13px; color: #333; line-height: 1.5; }
+    .unit-name .sub { display: block; font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+    .qty-wrap { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--cream);
+      color: var(--navy); font-size: 17px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; padding: 0; line-height: 1; transition: all 0.15s;
+    }
+    .qty-btn:active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .qty-display { width: 32px; text-align: center; font-size: 15px; font-weight: 700; color: var(--navy); font-family: 'Nanum Myeongjo', serif; }
+    .qty-display.has-qty { color: var(--gold); }
+
+    /* ── 요약 ── */
+    .bible-notice { background: #fdf3dc; border: 1px solid #e8c96a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #7d5a00; margin-bottom: 14px; line-height: 1.6; }
+    .bible-summary { background: var(--light); border-radius: 8px; padding: 11px 14px; font-size: 12px; color: var(--navy); margin-top: 12px; line-height: 1.8; }
+    .sum-empty { color: var(--gray); }
+    .sum-title { font-weight: 700; margin-bottom: 3px; }
+    .sum-list { color: #555; font-size: 11px; }
+
+    /* ── 제출 ── */
+    .btn-submit {
+      width: 100%; padding: 15px; background: var(--navy); color: var(--white);
+      border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif; cursor: pointer; letter-spacing: 1px;
+      transition: background 0.2s, transform 0.1s; margin-top: 4px;
+    }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { background: var(--gray); cursor: not-allowed; }
+
+    .msg { display: none; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.7; margin-top: 14px; white-space: pre-line; text-align: center; }
+    .msg.success { display: block; background: #eafaf1; border: 1px solid #a9dfbf; color: #1e8449; }
+    .msg.error   { display: block; background: #fdedec; border: 1px solid #f5b7b1; color: var(--error); }
+    .msg.dup     { display: block; background: #fef9e7; border: 1px solid #f9e79f; color: #7d6608; }
+
+    .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
+    .loading { display: none; text-align: center; padding: 12px 0; color: var(--gray); font-size: 13px; }
+    .loading.show { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="label">고척교회 · 성경필사 프로그램</div>
+  <h1>성경필사 신청</h1>
+  <p>말씀을 손으로, 마음으로 새기는 여정</p>
+</header>
+
+<nav>
+  <a href="index.html" class="active">✏️ 신청하기</a>
+  <a href="lookup.html">🔍 신청 조회</a>
+</nav>
+
+<main>
+
+  <!-- 개인 정보 -->
+  <div class="card">
+    <div class="card-title">개인 정보</div>
+
+    <!-- 교구 라디오 -->
+    <div class="field">
+      <label class="field-label">교구 <span class="req">*</span></label>
+      <div class="chip-group">
+        <label class="chip-label"><input type="radio" name="district" value="믿음" /><span class="chip">믿음</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="소망" /><span class="chip">소망</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="사랑" /><span class="chip">사랑</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="섬김" /><span class="chip">섬김</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="은혜" /><span class="chip">은혜</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="화평" /><span class="chip">화평</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="기쁨" /><span class="chip">기쁨</span></label>
+      </div>
+    </div>
+
+    <!-- 목장 텍스트 -->
+    <div class="field">
+      <label class="field-label">목장 <span class="req">*</span></label>
+      <input type="text" id="pasture" placeholder="목장명을 입력해 주세요" maxlength="20" />
+    </div>
+
+    <!-- 직분 라디오 -->
+    <div class="field">
+      <label class="field-label">직분 <span class="req">*</span></label>
+      <div class="chip-group">
+        <label class="chip-label"><input type="radio" name="position" value="성도님"    /><span class="chip">성도님</span></label>
+        <label class="chip-label"><input type="radio" name="position" value="집사님"    /><span class="chip">집사님</span></label>
+        <label class="chip-label"><input type="radio" name="position" value="안수집사님" /><span class="chip">안수집사님</span></label>
+        <label class="chip-label"><input type="radio" name="position" value="권사님"    /><span class="chip">권사님</span></label>
+        <label class="chip-label"><input type="radio" name="position" value="장로님"    /><span class="chip">장로님</span></label>
+        <label class="chip-label"><input type="radio" name="position" value="목사님"    /><span class="chip">목사님</span></label>
+        <label class="chip-label"><input type="radio" name="position" value="사모님"    /><span class="chip">사모님</span></label>
+      </div>
+    </div>
+
+    <!-- 성명 -->
+    <div class="field">
+      <label class="field-label">성명 <span class="req">*</span></label>
+      <input type="text" id="name" placeholder="예) 홍길동" maxlength="10" />
+      <p class="hint">띄어쓰기 없이 입력해 주세요</p>
+    </div>
+  </div>
+
+  <!-- 필사 옵션 -->
+  <div class="card">
+    <div class="card-title">필사 옵션</div>
+
+    <div class="field">
+      <label class="field-label">필사 유형 <span class="req">*</span></label>
+      <div class="type-group">
+        <label class="type-label">
+          <input type="radio" name="type1" value="오른쪽 필사형" />
+          <span class="type-btn">오른쪽 필사형<br/><small style="font-size:11px;opacity:0.75">본문 오른쪽에 필사 공간</small></span>
+        </label>
+        <label class="type-label">
+          <input type="radio" name="type1" value="아래쪽 필사형" />
+          <span class="type-btn">아래쪽 필사형<br/><small style="font-size:11px;opacity:0.75">본문 아래에 필사 공간</small></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">성경 번역본 <span class="req">*</span></label>
+      <div class="chip-group">
+        <label class="chip-label"><input type="radio" name="type2" value="개역개정" /><span class="chip">개역개정</span></label>
+        <label class="chip-label"><input type="radio" name="type2" value="쉬운성경" /><span class="chip">쉬운성경</span></label>
+        <label class="chip-label"><input type="radio" name="type2" value="NIV"      /><span class="chip">NIV</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 성경 선택 -->
+  <div class="card">
+    <div class="card-title">성경 선택 및 부수</div>
+
+    <div class="bible-notice">
+      📖 신청 단위별로 부수를 선택해 주세요.<br/>
+      묶음 항목은 함께 제작되는 1개 단위입니다.
+    </div>
+
+    <div class="testament-tabs">
+      <button class="testament-tab active" onclick="switchTab('ot')">구약</button>
+      <button class="testament-tab"        onclick="switchTab('nt')">신약</button>
+    </div>
+
+    <div class="testament-panel active" id="panel-ot"></div>
+    <div class="testament-panel"        id="panel-nt"></div>
+
+    <div class="bible-summary" id="bibleSummary">
+      <span class="sum-empty">선택한 항목이 없습니다.</span>
+    </div>
+  </div>
+
+  <!-- 요청 사항 -->
+  <div class="card">
+    <div class="card-title">요청 사항</div>
+    <div class="field">
+      <label class="field-label">기타 요청 사항 <span style="color:var(--gray);font-weight:400">(선택)</span></label>
+      <textarea id="memo" placeholder="배송, 수량 조정, 기타 문의 사항 등을 자유롭게 적어 주세요."></textarea>
+    </div>
+  </div>
+
+  <button class="btn-submit" id="submitBtn" onclick="submitForm()">신청하기</button>
+  <div class="loading" id="loading">⏳ 처리 중입니다...</div>
+  <div class="msg" id="msg"></div>
+
+</main>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbz87ua9LrNPTosvFv1Z2RY2z2PhBV21zz7ZQSlXBoGu1KqEeXS6IQw7YhMXVpiL_bN0Zg/exec';
+
+const UNITS = {
+  ot: [
+    { id:'ot01', label:'창세기' },
+    { id:'ot02', label:'출애굽기' },
+    { id:'ot03', label:'레위기' },
+    { id:'ot04', label:'민수기' },
+    { id:'ot05', label:'여호수아' },
+    { id:'ot06', label:'사사기',    sub:'룻기' },
+    { id:'ot07', label:'사무엘상' },
+    { id:'ot08', label:'사무엘하' },
+    { id:'ot09', label:'열왕기상' },
+    { id:'ot10', label:'열왕기하' },
+    { id:'ot11', label:'역대상' },
+    { id:'ot12', label:'역대하' },
+    { id:'ot13', label:'에스라' },
+    { id:'ot14', label:'느헤미야' },
+    { id:'ot15', label:'에스더' },
+    { id:'ot16', label:'욥기' },
+    { id:'ot17', label:'시편' },
+    { id:'ot18', label:'잠언',      sub:'전도서' },
+    { id:'ot19', label:'이사야' },
+    { id:'ot20', label:'예레미야',  sub:'예레미야 애가' },
+    { id:'ot21', label:'에스겔' },
+    { id:'ot22', label:'호세아',    sub:'요엘 · 아모스 · 오바댜 · 요나 · 미가 · 나훔 · 하박국 · 스바냐 · 학개 · 스가랴 · 말라기' },
+  ],
+  nt: [
+    { id:'nt01', label:'마태복음' },
+    { id:'nt02', label:'마가복음' },
+    { id:'nt03', label:'누가복음' },
+    { id:'nt04', label:'요한복음' },
+    { id:'nt05', label:'사도행전' },
+    { id:'nt06', label:'로마서',       sub:'고린도전서 · 고린도후서' },
+    { id:'nt07', label:'갈라디아서',   sub:'에베소서 · 빌립보서 · 골로새서 · 데살로니가전서 · 데살로니가후서 · 디모데전서 · 디모데후서 · 디도서 · 빌레몬서' },
+    { id:'nt08', label:'히브리서',     sub:'야고보서 · 베드로전서 · 베드로후서 · 요한일서 · 요한이서 · 요한삼서 · 유다서 · 요한계시록' },
+  ]
+};
+
+const qtys = {};
+Object.values(UNITS).flat().forEach(u => { qtys[u.id] = 0; });
+
+function buildPanels() {
+  ['ot','nt'].forEach(t => {
+    const panel = document.getElementById('panel-' + t);
+    UNITS[t].forEach(unit => {
+      const row = document.createElement('div');
+      row.className = 'unit-row';
+      row.innerHTML = `
+        <div class="unit-name">
+          ${esc(unit.label)}
+          ${unit.sub ? `<span class="sub">+ ${esc(unit.sub)}</span>` : ''}
+        </div>
+        <div class="qty-wrap">
+          <button class="qty-btn" onclick="changeQty('${unit.id}',-1)">−</button>
+          <div class="qty-display" id="disp-${unit.id}">0</div>
+          <button class="qty-btn" onclick="changeQty('${unit.id}',1)">＋</button>
+        </div>`;
+      panel.appendChild(row);
+    });
+  });
+}
+
+function changeQty(id, delta) {
+  qtys[id] = Math.max(0, Math.min(99, qtys[id] + delta));
+  const el = document.getElementById('disp-' + id);
+  el.textContent = qtys[id];
+  el.className = 'qty-display' + (qtys[id] > 0 ? ' has-qty' : '');
+  updateSummary();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.testament-tab').forEach((t,i) =>
+    t.classList.toggle('active', (i===0&&tab==='ot')||(i===1&&tab==='nt')));
+  document.querySelectorAll('.testament-panel').forEach((p,i) =>
+    p.classList.toggle('active', (i===0&&tab==='ot')||(i===1&&tab==='nt')));
+}
+
+function getSelected() {
+  return Object.values(UNITS).flat().filter(u => qtys[u.id] > 0);
+}
+
+function updateSummary() {
+  const sel = getSelected();
+  const el  = document.getElementById('bibleSummary');
+  if (sel.length === 0) {
+    el.innerHTML = '<span class="sum-empty">선택한 항목이 없습니다.</span>';
+    return;
+  }
+  const total = sel.reduce((s,u) => s + qtys[u.id], 0);
+  const lines = sel.map(u => `${u.label}${u.sub?'외':''} ${qtys[u.id]}부`).join('&nbsp; · &nbsp;');
+  el.innerHTML = `<div class="sum-title">✅ ${sel.length}종 · 총 ${total}부</div><div class="sum-list">${lines}</div>`;
+}
+
+async function submitForm() {
+  const district = document.querySelector('input[name="district"]:checked')?.value;
+  const pasture  = document.getElementById('pasture').value.trim();
+  const position = document.querySelector('input[name="position"]:checked')?.value;
+  const name     = document.getElementById('name').value.trim();
+  const type1    = document.querySelector('input[name="type1"]:checked')?.value;
+  const type2    = document.querySelector('input[name="type2"]:checked')?.value;
+  const selected = getSelected();
+  const memo     = document.getElementById('memo').value.trim();
+
+  const errors = [];
+  if (!district)           errors.push('교구');
+  if (!pasture)            errors.push('목장');
+  if (!position)           errors.push('직분');
+  if (!name)               errors.push('성명');
+  if (!type1)              errors.push('필사 유형');
+  if (!type2)              errors.push('성경 번역본');
+  if (selected.length===0) errors.push('성경 (부수를 1 이상 선택)');
+
+  if (errors.length > 0) {
+    showMsg('error', '다음 항목을 확인해 주세요:\n' + errors.join(', '));
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('loading').classList.add('show');
+  hideMsg();
+
+  try {
+    const bibleStr = selected.map(u => `${u.label}${u.sub?'외':''}(${qtys[u.id]}부)`).join(', ');
+    const totalQty = selected.reduce((s,u) => s + qtys[u.id], 0);
+
+    const fd = new FormData();
+    fd.append('교구',     district);
+    fd.append('목장',     pasture);
+    fd.append('직분',     position);
+    fd.append('성명',     name);
+    fd.append('선택유형1', type1);
+    fd.append('선택유형2', type2);
+    fd.append('성경선택',  bibleStr);
+    fd.append('총부수',   String(totalQty));
+    fd.append('요청사항',  memo);
+
+    const res  = await fetch(API_URL, { method: 'POST', body: fd });
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      showMsg('success', '✅ ' + data.message);
+      resetForm();
+    } else if (data.status === 'duplicate') {
+      showMsg('dup', '⚠️ ' + data.message);
+    } else {
+      showMsg('error', '❌ ' + (data.message || '오류가 발생했습니다.'));
+    }
+  } catch (err) {
+    showMsg('error', '❌ 서버와 연결할 수 없습니다.\n잠시 후 다시 시도해 주세요.');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('loading').classList.remove('show');
+  }
+}
+
+function resetForm() {
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.getElementById('pasture').value = '';
+  document.getElementById('name').value    = '';
+  document.getElementById('memo').value    = '';
+  Object.keys(qtys).forEach(id => {
+    qtys[id] = 0;
+    const el = document.getElementById('disp-' + id);
+    if (el) { el.textContent = '0'; el.className = 'qty-display'; }
+  });
+  updateSummary();
+}
+
+function showMsg(type, text) {
+  const el = document.getElementById('msg');
+  el.className = 'msg ' + type;
+  el.textContent = text;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function hideMsg() {
+  const el = document.getElementById('msg');
+  el.className = 'msg'; el.textContent = '';
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+buildPanels();
+updateSummary();
+</script>
+</body>
+</html>
