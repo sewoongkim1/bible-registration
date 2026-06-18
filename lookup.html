@@ -8,14 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
 :root {
-  --navy: #1a3a6b;
-  --gold: #c8a84b;
-  --cream: #fdf8f0;
-  --white: #ffffff;
-  --gray: #6b7280;
-  --light: #f3f0ea;
-  --border: #ddd6c8;
-  --error: #c0392b;
+  --navy: #1a3a6b; --gold: #c8a84b; --cream: #fdf8f0; --white: #ffffff;
+  --gray: #6b7280; --light: #f3f0ea; --border: #ddd6c8; --error: #c0392b;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans KR', sans-serif; background: var(--cream); color: #222; min-height: 100vh; }
@@ -40,6 +34,8 @@ label { display: block; font-size: 12px; font-weight: 500; color: var(--navy); m
 .chip-group input[type="radio"]:checked + .chip { border-color: var(--navy); background: var(--navy); color: var(--white); font-weight: 600; }
 input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; color: #222; background: var(--cream); transition: border-color 0.2s; }
 input[type="text"]:focus { outline: none; border-color: var(--navy); background: var(--white); }
+textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; color: #222; background: var(--cream); resize: vertical; min-height: 80px; line-height: 1.6; transition: border-color 0.2s; }
+textarea:focus { outline: none; border-color: var(--error); background: var(--white); }
 .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
 .btn-search { width: 100%; padding: 14px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
 .btn-search:disabled { background: var(--gray); cursor: not-allowed; }
@@ -47,132 +43,67 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
 .loading.show { display: block; }
 .msg { display: none; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.6; margin-top: 14px; text-align: center; }
 .msg.error { display: block; background: #fdedec; border: 1px solid #f5b7b1; color: var(--error); }
-.msg.warn { display: block; background: #fffbea; border: 1px solid #f0d060; color: #7a5800; }
-
-/* ── 결과 영역 ── */
+.msg.warn  { display: block; background: #fffbea; border: 1px solid #f0d060; color: #7a5800; }
 #results { display: none; }
 .result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .result-count { font-size: 13px; color: var(--gray); }
 .result-count strong { color: var(--navy); font-size: 16px; }
-
-/* ── 결과 카드 ── */
 .person-card { background: var(--white); border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(26,58,107,0.09); overflow: hidden; border: 1px solid var(--border); }
-
 .person-card-header { background: var(--navy); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
 .person-card-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; }
-
-.person-card-name-row { background: var(--white); padding: 12px 16px 11px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.person-card-name-row { background: var(--white); padding: 12px 16px 11px; border-bottom: 1px solid var(--border); }
 .person-card-name { font-family: 'Nanum Myeongjo', serif; font-size: 18px; font-weight: 800; color: var(--navy); }
-
-/* ── 진행 상태 스텝퍼 ── */
-.status-stepper {
-  padding: 16px 16px 14px;
-  border-bottom: 1px solid var(--border);
-  background: var(--white);
-}
-.stepper-track {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  position: relative;
-}
-.stepper-track::before {
-  content: '';
-  position: absolute;
-  top: 13px;
-  left: 13px;
-  right: 13px;
-  height: 2px;
-  background: var(--border);
-  z-index: 0;
-}
-.stepper-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-.stepper-dot {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: var(--gray);
-  font-weight: 700;
-  margin-bottom: 5px;
-  transition: all 0.2s;
-}
-.stepper-label {
-  font-size: 9px;
-  color: var(--gray);
-  text-align: center;
-  white-space: nowrap;
-  line-height: 1.3;
-}
-/* 완료된 단계 */
-.stepper-item.done .stepper-dot {
-  background: #b2dfdb;
-  border-color: #4db6ac;
-  color: #00695c;
-}
+/* ── 스텝퍼 ── */
+.status-stepper { padding: 16px 16px 14px; border-bottom: 1px solid var(--border); background: var(--white); }
+.stepper-track { display: flex; align-items: flex-start; justify-content: space-between; position: relative; }
+.stepper-track::before { content: ''; position: absolute; top: 13px; left: 13px; right: 13px; height: 2px; background: var(--border); z-index: 0; }
+.stepper-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 1; }
+.stepper-dot { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gray); font-weight: 700; margin-bottom: 5px; transition: all 0.2s; }
+.stepper-label { font-size: 9px; color: var(--gray); text-align: center; white-space: nowrap; line-height: 1.3; }
+.stepper-item.done .stepper-dot { background: #b2dfdb; border-color: #4db6ac; color: #00695c; }
 .stepper-item.done .stepper-label { color: #00695c; }
-/* 현재 단계 */
-.stepper-item.current .stepper-dot {
-  background: var(--gold);
-  border-color: #a07820;
-  color: #fff;
-  box-shadow: 0 0 0 4px rgba(200,168,75,0.22);
-  transform: scale(1.18);
-}
+.stepper-item.current .stepper-dot { background: var(--gold); border-color: #a07820; color: #fff; box-shadow: 0 0 0 4px rgba(200,168,75,0.22); transform: scale(1.18); }
 .stepper-item.current .stepper-label { color: #7a5800; font-weight: 700; }
-
-/* ── 안내 메시지 박스 ── */
-.status-message {
-  margin: 0 16px 14px;
-  padding: 11px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.5;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-.status-message.s-step1 { background: #fff8e1; color: #7a5800; border: 1px solid #ffe082; }
-.status-message.s-step2 { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
-.status-message.s-step3 { background: #e3f2fd; color: #0a4d8c; border: 1px solid #90caf9; }
-.status-message.s-step4 { background: #f3e5f5; color: #6a1b9a; border: 1px solid #ce93d8; }
-.status-message.s-step5 { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
+/* ── 안내 메시지 ── */
+.status-message { margin: 0 16px 14px; padding: 11px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+.status-message.s-step1 { background: #fff8e1; color: #7a5800;  border: 1px solid #ffe082; }
+.status-message.s-step2 { background: #e8f5e9; color: #1b5e20;  border: 1px solid #a5d6a7; }
+.status-message.s-step3 { background: #e3f2fd; color: #0a4d8c;  border: 1px solid #90caf9; }
+.status-message.s-step4 { background: #f3e5f5; color: #6a1b9a;  border: 1px solid #ce93d8; }
+.status-message.s-step5 { background: #fce4ec; color: #880e4f;  border: 1px solid #f48fb1; }
+.status-message.s-cancel{ background: #f5f5f5; color: #555;     border: 1px solid #bbb; }
 .status-message-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
+/* ── 취소 버튼 영역 ── */
+.cancel-area { padding: 0 16px 14px; }
+.btn-cancel-req { width: 100%; padding: 11px; background: transparent; color: var(--error); border: 1.5px solid var(--error); border-radius: 8px; font-size: 13px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.15s; }
+.btn-cancel-req:hover { background: var(--error); color: var(--white); }
+/* ── 취소 확인 모달 ── */
+.cancel-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end; justify-content: center; }
+.cancel-modal-backdrop.open { display: flex; }
+.cancel-modal { background: var(--white); border-radius: 20px 20px 0 0; width: 100%; max-width: 520px; padding: 0 0 28px; animation: slideUp 0.22s ease; }
+@keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.cancel-modal-header { background: var(--error); padding: 16px 20px; border-radius: 20px 20px 0 0; text-align: center; }
+.cancel-modal-header h3 { font-family: 'Nanum Myeongjo', serif; color: var(--white); font-size: 16px; font-weight: 800; }
+.cancel-modal-header p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 4px; }
+.cancel-modal-body { padding: 18px 20px 0; }
+.cancel-modal-body label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 7px; }
+.cancel-modal-btns { display: flex; gap: 10px; padding: 14px 20px 0; }
+.btn-cm-back { flex: 1; padding: 13px; background: var(--light); color: var(--navy); border: none; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+.btn-cm-confirm { flex: 2; padding: 13px; background: var(--error); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+.btn-cm-confirm:disabled { background: var(--gray); cursor: not-allowed; }
 /* ── 테이블 ── */
 .info-table { width: 100%; border-collapse: collapse; }
 .info-table tr:last-child td { border-bottom: none; }
 .info-table td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; background: var(--white); }
 .info-table td.key { font-size: 12px; font-weight: 600; color: var(--gray); width: 76px; white-space: nowrap; border-right: 1px solid var(--border); }
 .info-table td.val { color: #1a2a40; font-weight: 400; line-height: 1.5; }
-
-/* ── 통계 카드 ── */
-#statsArea { display: none; }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-.stat-item { background: var(--light); border-radius: 8px; padding: 12px; text-align: center; }
-.stat-label { font-size: 11px; color: var(--gray); margin-bottom: 4px; }
-.stat-value { font-size: 22px; font-weight: 700; color: var(--navy); font-family: 'Nanum Myeongjo', serif; }
-.bar-list { margin-top: 8px; }
-.bar-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.bar-label { font-size: 12px; color: #333; min-width: 70px; }
-.bar-track { flex: 1; height: 8px; background: var(--light); border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; background: var(--navy); border-radius: 4px; transition: width 0.6s ease; }
-.bar-count { font-size: 12px; color: var(--gray); min-width: 24px; text-align: right; }
 .no-result { text-align: center; padding: 32px 0; color: var(--gray); font-size: 14px; }
 .no-result .icon { font-size: 36px; margin-bottom: 10px; }
+/* ── 취소됨 카드 ── */
+.cancelled-banner { background: #f5f5f5; border-bottom: 1px solid #ddd; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+.cancelled-banner .c-icon { font-size: 18px; }
+.cancelled-banner .c-text { font-size: 12px; color: #555; line-height: 1.5; }
+.cancelled-banner .c-label { font-weight: 700; color: #333; font-size: 13px; display: block; }
 </style>
 </head>
 <body>
@@ -192,23 +123,23 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
     <div class="field">
       <label>교구</label>
       <div class="chip-group">
-        <label class="chip-label"><input type="radio" name="district" value="믿음" /><span class="chip">믿음</span></label>
-        <label class="chip-label"><input type="radio" name="district" value="소망" /><span class="chip">소망</span></label>
-        <label class="chip-label"><input type="radio" name="district" value="사랑" /><span class="chip">사랑</span></label>
-        <label class="chip-label"><input type="radio" name="district" value="섬김" /><span class="chip">섬김</span></label>
-        <label class="chip-label"><input type="radio" name="district" value="은혜" /><span class="chip">은혜</span></label>
-        <label class="chip-label"><input type="radio" name="district" value="화평" /><span class="chip">화평</span></label>
-        <label class="chip-label"><input type="radio" name="district" value="기쁨" /><span class="chip">기쁨</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="믿음"/><span class="chip">믿음</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="소망"/><span class="chip">소망</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="사랑"/><span class="chip">사랑</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="섬김"/><span class="chip">섬김</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="은혜"/><span class="chip">은혜</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="화평"/><span class="chip">화평</span></label>
+        <label class="chip-label"><input type="radio" name="district" value="기쁨"/><span class="chip">기쁨</span></label>
       </div>
     </div>
     <div class="field">
       <label>목장</label>
-      <input type="text" id="s-pasture" placeholder="목장명을 정확히 입력하세요" maxlength="20" />
+      <input type="text" id="s-pasture" placeholder="목장명을 정확히 입력하세요" maxlength="20"/>
       <p class="hint">목장명 전체를 정확히 입력해야 조회됩니다.</p>
     </div>
     <div class="field">
       <label>성명</label>
-      <input type="text" id="s-name" placeholder="이름을 정확히 입력하세요" maxlength="10" />
+      <input type="text" id="s-name" placeholder="이름을 정확히 입력하세요" maxlength="10"/>
       <p class="hint">이름 전체를 정확히 입력해야 조회됩니다.</p>
     </div>
     <button class="btn-search" id="searchBtn" onclick="doSearch()">🔍 조회하기</button>
@@ -221,10 +152,28 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
     </div>
     <div id="resultList"></div>
   </div>
-</main><script>
+</main>
+
+<!-- 취소 확인 모달 -->
+<div class="cancel-modal-backdrop" id="cancelBackdrop">
+  <div class="cancel-modal">
+    <div class="cancel-modal-header">
+      <h3>❌ 신청 취소</h3>
+      <p>취소 후에는 되돌릴 수 없습니다</p>
+    </div>
+    <div class="cancel-modal-body">
+      <label>취소 사유를 입력해 주세요 <span style="color:var(--error)">*</span></label>
+      <textarea id="cancelReason" placeholder="취소 사유를 입력해 주세요 (예: 개인 사정으로 인한 취소)" maxlength="200"></textarea>
+    </div>
+    <div class="cancel-modal-btns">
+      <button class="btn-cm-back" onclick="closeCancelModal()">돌아가기</button>
+      <button class="btn-cm-confirm" id="cancelConfirmBtn" onclick="submitCancel()">취소 확인</button>
+    </div>
+  </div>
+</div>
+<script>
 var API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqywSQNZC8q6oQG0GbpQs7FyAl18hWNxjZKk4G3VXoH9UrDQ/exec';
 
-/* 상태 단계 정의 */
 var STATUS_STEPS = [
   { key: '신청확인', icon: '✅', cls: 's-step1', msg: '입금 부탁드립니다.' },
   { key: '입금확인', icon: '💰', cls: 's-step2', msg: '입금 확인되었습니다.' },
@@ -232,10 +181,14 @@ var STATUS_STEPS = [
   { key: '준비완료', icon: '📦', cls: 's-step4', msg: '신청하신 필사노트가 준비되었습니다.' },
   { key: '완료',    icon: '🎉', cls: 's-step5', msg: '필사노트가 전달되었습니다.' }
 ];
+var CANCELLABLE = ['신청확인', '입금확인'];
+
+var _cancelRowId = null; /* 취소 처리할 행 식별자 (성명+타임스탬프) */
+var _cancelPerson = null;
 
 function getSelectedDistrict() {
-  var checked = document.querySelector('input[name="district"]:checked');
-  return checked ? checked.value : '';
+  var c = document.querySelector('input[name="district"]:checked');
+  return c ? c.value : '';
 }
 
 function fmtDate(raw) {
@@ -252,110 +205,99 @@ function fmtDate(raw) {
     }
   }
   if (isNaN(d.getTime())) return s;
-  var yy = d.getFullYear();
-  var mo = String(d.getMonth()+1).padStart(2,'0');
-  var dd = String(d.getDate()).padStart(2,'0');
-  var hh = String(d.getHours()).padStart(2,'0');
-  var mi = String(d.getMinutes()).padStart(2,'0');
-  return yy + '-' + mo + '-' + dd + ' ' + hh + ':' + mi;
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' +
+         String(d.getDate()).padStart(2,'0') + ' ' + String(d.getHours()).padStart(2,'0') + ':' +
+         String(d.getMinutes()).padStart(2,'0');
 }
 
 function getStepIndex(status) {
   for (var i = 0; i < STATUS_STEPS.length; i++) {
     if (STATUS_STEPS[i].key === status) return i;
   }
-  return 0; /* 기본값: 신청확인 */
+  return 0;
 }
 
-/* ── 진행 스텝퍼 렌더 ── */
 function renderStepper(status) {
   var curIdx = getStepIndex(status);
   var wrap = document.createElement('div');
   wrap.className = 'status-stepper';
-
   var track = document.createElement('div');
   track.className = 'stepper-track';
-
   STATUS_STEPS.forEach(function(step, i) {
     var item = document.createElement('div');
-    item.className = 'stepper-item';
-    if (i < curIdx) item.className += ' done';
-    else if (i === curIdx) item.className += ' current';
-
+    item.className = 'stepper-item' + (i < curIdx ? ' done' : (i === curIdx ? ' current' : ''));
     var dot = document.createElement('div');
     dot.className = 'stepper-dot';
     dot.textContent = i < curIdx ? '✓' : (i === curIdx ? step.icon : String(i + 1));
-
     var lbl = document.createElement('div');
     lbl.className = 'stepper-label';
     lbl.textContent = step.key;
-
-    item.appendChild(dot);
-    item.appendChild(lbl);
+    item.appendChild(dot); item.appendChild(lbl);
     track.appendChild(item);
   });
-
   wrap.appendChild(track);
   return wrap;
 }
 
-/* ── 안내 메시지 렌더 ── */
 function renderStatusMsg(status) {
   var curIdx = getStepIndex(status);
   var step = STATUS_STEPS[curIdx];
   var box = document.createElement('div');
   box.className = 'status-message ' + step.cls;
-
   var icon = document.createElement('span');
   icon.className = 'status-message-icon';
   icon.textContent = step.icon;
-
   var txt = document.createElement('span');
   txt.textContent = step.msg;
-
-  box.appendChild(icon);
-  box.appendChild(txt);
+  box.appendChild(icon); box.appendChild(txt);
   return box;
+}
+
+function renderCancelledBanner(person) {
+  var reason = String(person['취소사유'] || '').trim();
+  var banner = document.createElement('div');
+  banner.className = 'cancelled-banner';
+  var ci = document.createElement('span'); ci.className = 'c-icon'; ci.textContent = '❌';
+  var ct = document.createElement('div'); ct.className = 'c-text';
+  var cl = document.createElement('span'); cl.className = 'c-label'; cl.textContent = '신청 취소됨';
+  ct.appendChild(cl);
+  if (reason) {
+    var cr = document.createElement('span');
+    cr.textContent = '취소 사유: ' + reason;
+    ct.appendChild(cr);
+  }
+  banner.appendChild(ci); banner.appendChild(ct);
+  return banner;
 }
 
 async function doSearch() {
   var district = getSelectedDistrict();
-  var pasture = document.getElementById('s-pasture').value.trim();
-  var name = document.getElementById('s-name').value.trim();
-  var missing = [];
+  var pasture  = document.getElementById('s-pasture').value.trim();
+  var name     = document.getElementById('s-name').value.trim();
+  var missing  = [];
   if (!district) missing.push('교구');
-  if (!pasture) missing.push('목장');
-  if (!name) missing.push('성명');
+  if (!pasture)  missing.push('목장');
+  if (!name)     missing.push('성명');
   if (missing.length > 0) { showWarn(missing.join(', ') + '을(를) 입력(선택)해 주세요.'); return; }
-  setLoading(true);
-  hideResults();
-  hideMsg();
+  setLoading(true); hideResults(); hideMsg();
   try {
     var params = new URLSearchParams({ action: 'lookup' });
     params.append('교구', district);
     params.append('목장', pasture);
     params.append('성명', name);
-    var res = await fetch(API_URL + '?' + params);
+    var res  = await fetch(API_URL + '?' + params);
     var data = await res.json();
     if (data.status === 'success') {
-      var filtered = (data.data || []).filter(function(person) {
-        var pDistrict = String(person['교구'] || '').trim();
-        var pPasture  = String(person['목장'] || '').trim();
-        var pName     = String(person['성명'] || '').trim();
-        if (pDistrict !== district) return false;
-        if (pasture && pPasture !== pasture) return false;
-        if (name && pName !== name) return false;
+      var filtered = (data.data || []).filter(function(p) {
+        if (String(p['교구']||'').trim() !== district) return false;
+        if (pasture && String(p['목장']||'').trim() !== pasture) return false;
+        if (name    && String(p['성명']||'').trim() !== name)    return false;
         return true;
       });
       renderResults(filtered);
-    } else {
-      showMsg(data.message || '조회 중 오류가 발생했습니다.');
-    }
-  } catch (err) {
-    showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
-  } finally {
-    setLoading(false);
-  }
+    } else { showMsg(data.message || '조회 중 오류가 발생했습니다.'); }
+  } catch(e) { showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+  } finally { setLoading(false); }
 }
 
 function makeRow(key, val) {
@@ -367,69 +309,112 @@ function makeRow(key, val) {
 }
 
 function renderResults(list) {
-  var resultsEl = document.getElementById('results');
-  var countEl   = document.getElementById('resultCount');
-  var listEl    = document.getElementById('resultList');
-  countEl.textContent = list.length;
+  document.getElementById('resultCount').textContent = list.length;
+  var listEl = document.getElementById('resultList');
   listEl.innerHTML = '';
-
   if (list.length === 0) {
-    var noEl = document.createElement('div');
-    noEl.className = 'no-result';
-    var iconEl = document.createElement('div'); iconEl.className = 'icon'; iconEl.textContent = '📭';
-    var msgEl = document.createElement('div'); msgEl.textContent = '조회 결과가 없습니다.';
-    noEl.appendChild(iconEl); noEl.appendChild(msgEl);
-    listEl.appendChild(noEl);
+    var noEl = document.createElement('div'); noEl.className = 'no-result';
+    var ic = document.createElement('div'); ic.className = 'icon'; ic.textContent = '📭';
+    var mg = document.createElement('div'); mg.textContent = '조회 결과가 없습니다.';
+    noEl.appendChild(ic); noEl.appendChild(mg); listEl.appendChild(noEl);
   } else {
     list.forEach(function(person) {
-      var status = String(person['상태'] || '신청확인').trim();
+      var status     = String(person['상태'] || '신청확인').trim();
+      var isCancelled = status === '취소';
       var card = document.createElement('div');
       card.className = 'person-card';
 
       /* 헤더 */
-      var header = document.createElement('div');
-      header.className = 'person-card-header';
-      var lbl = document.createElement('span');
-      lbl.className = 'person-card-label';
-      lbl.textContent = '성경필사 신청';
+      var header = document.createElement('div'); header.className = 'person-card-header';
+      var lbl = document.createElement('span'); lbl.className = 'person-card-label'; lbl.textContent = '성경필사 신청';
       header.appendChild(lbl);
 
       /* 이름 */
-      var nameRow = document.createElement('div');
-      nameRow.className = 'person-card-name-row';
-      var nameEl = document.createElement('span');
-      nameEl.className = 'person-card-name';
+      var nameRow = document.createElement('div'); nameRow.className = 'person-card-name-row';
+      var nameEl  = document.createElement('span'); nameEl.className = 'person-card-name';
       nameEl.textContent = person['성명'] || '(이름 없음)';
       nameRow.appendChild(nameEl);
 
-      /* 스텝퍼 */
-      var stepper = renderStepper(status);
-
-      /* 안내 메시지 */
-      var msgBox = renderStatusMsg(status);
-
-      /* 테이블 */
-      var table = document.createElement('table');
-      table.className = 'info-table';
-      var tbody = document.createElement('tbody');
-      tbody.appendChild(makeRow('교구', person['교구']));
-      tbody.appendChild(makeRow('목장', person['목장']));
-      tbody.appendChild(makeRow('직분', person['직분']));
-      tbody.appendChild(makeRow('성경선택', person['성경선택']));
-      tbody.appendChild(makeRow('필사유형', person['선택유형1']));
-      tbody.appendChild(makeRow('번역본', person['선택유형2']));
-      tbody.appendChild(makeRow('신청일', fmtDate(person['타임스탬프'])));
-      table.appendChild(tbody);
-
       card.appendChild(header);
       card.appendChild(nameRow);
-      card.appendChild(stepper);
-      card.appendChild(msgBox);
-      card.appendChild(table);
+
+      if (isCancelled) {
+        /* 취소된 경우: 취소 배너만 표시 */
+        card.appendChild(renderCancelledBanner(person));
+      } else {
+        /* 정상 진행 중 */
+        card.appendChild(renderStepper(status));
+        card.appendChild(renderStatusMsg(status));
+
+        /* 취소 가능 상태면 취소 버튼 */
+        if (CANCELLABLE.indexOf(status) !== -1) {
+          var ca = document.createElement('div'); ca.className = 'cancel-area';
+          var btn = document.createElement('button'); btn.className = 'btn-cancel-req';
+          btn.textContent = '❌ 신청 취소하기';
+          btn.onclick = function() { openCancelModal(person); };
+          ca.appendChild(btn); card.appendChild(ca);
+        }
+      }
+
+      /* 테이블 */
+      var table = document.createElement('table'); table.className = 'info-table';
+      var tbody = document.createElement('tbody');
+      tbody.appendChild(makeRow('교구',   person['교구']));
+      tbody.appendChild(makeRow('목장',   person['목장']));
+      tbody.appendChild(makeRow('직분',   person['직분']));
+      tbody.appendChild(makeRow('성경선택', person['성경선택']));
+      tbody.appendChild(makeRow('필사유형', person['선택유형1']));
+      tbody.appendChild(makeRow('번역본',   person['선택유형2']));
+      tbody.appendChild(makeRow('신청일',   fmtDate(person['타임스탬프'])));
+      table.appendChild(tbody); card.appendChild(table);
       listEl.appendChild(card);
     });
   }
-  resultsEl.style.display = 'block';
+  document.getElementById('results').style.display = 'block';
+}
+
+/* ── 취소 모달 ── */
+function openCancelModal(person) {
+  _cancelPerson = person;
+  document.getElementById('cancelReason').value = '';
+  document.getElementById('cancelConfirmBtn').disabled = false;
+  document.getElementById('cancelBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCancelModal() {
+  document.getElementById('cancelBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function submitCancel() {
+  var reason = document.getElementById('cancelReason').value.trim();
+  if (!reason) {
+    alert('취소 사유를 입력해 주세요.');
+    return;
+  }
+  var btn = document.getElementById('cancelConfirmBtn');
+  btn.disabled = true; btn.textContent = '⏳ 처리중...';
+  try {
+    var fd = new FormData();
+    fd.append('action',    'cancel');
+    fd.append('성명',  _cancelPerson['성명']);
+    fd.append('교구',  _cancelPerson['교구']);
+    fd.append('목장',  _cancelPerson['목장']);
+    fd.append('타임스탬프', _cancelPerson['타임스탬프'] || '');
+    fd.append('취소사유', reason);
+    var res  = await fetch(API_URL, { method: 'POST', body: fd });
+    var data = await res.json();
+    closeCancelModal();
+    if (data.status === 'success') {
+      showMsg2('취소되었습니다. 이용해 주셔서 감사합니다.', 'warn');
+      doSearch(); /* 목록 새로고침 */
+    } else {
+      showMsg('취소 실패: ' + (data.message || '오류'));
+    }
+  } catch(e) {
+    closeCancelModal();
+    showMsg('서버와 연결할 수 없습니다.');
+  }
 }
 
 function setLoading(on) {
@@ -438,21 +423,22 @@ function setLoading(on) {
 }
 function hideResults() { document.getElementById('results').style.display = 'none'; }
 function showMsg(text) {
-  var el = document.getElementById('msg');
-  el.className = 'msg error';
-  el.textContent = '❌ ' + text;
+  var el = document.getElementById('msg'); el.className = 'msg error'; el.textContent = '❌ ' + text;
+}
+function showMsg2(text, type) {
+  var el = document.getElementById('msg'); el.className = 'msg ' + type; el.textContent = text;
 }
 function showWarn(text) {
-  var el = document.getElementById('msg');
-  el.className = 'msg warn';
-  el.textContent = '⚠️ ' + text;
+  var el = document.getElementById('msg'); el.className = 'msg warn'; el.textContent = '⚠️ ' + text;
 }
 function hideMsg() {
-  var el = document.getElementById('msg');
-  el.className = 'msg'; el.textContent = '';
+  var el = document.getElementById('msg'); el.className = 'msg'; el.textContent = '';
 }
 ['s-pasture','s-name'].forEach(function(id){
   document.getElementById(id).addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
+});
+document.getElementById('cancelBackdrop').addEventListener('click', function(e){
+  if (e.target === this) closeCancelModal();
 });
 </script>
 </body>
