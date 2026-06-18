@@ -34,8 +34,8 @@ label { display: block; font-size: 12px; font-weight: 500; color: var(--navy); m
 .chip-group input[type="radio"]:checked + .chip { border-color: var(--navy); background: var(--navy); color: var(--white); font-weight: 600; }
 input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; color: #222; background: var(--cream); transition: border-color 0.2s; }
 input[type="text"]:focus { outline: none; border-color: var(--navy); background: var(--white); }
-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; color: #222; background: var(--cream); resize: vertical; min-height: 80px; line-height: 1.6; transition: border-color 0.2s; }
-textarea:focus { outline: none; border-color: var(--error); background: var(--white); }
+textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; color: #222; background: var(--cream); resize: none; min-height: 64px; line-height: 1.6; transition: border-color 0.2s; }
+textarea:focus { outline: none; border-color: #888; background: var(--white); }
 .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
 .btn-search { width: 100%; padding: 14px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
 .btn-search:disabled { background: var(--gray); cursor: not-allowed; }
@@ -75,21 +75,21 @@ textarea:focus { outline: none; border-color: var(--error); background: var(--wh
 .status-message-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 /* ── 취소 버튼 영역 ── */
 .cancel-area { padding: 0 16px 14px; }
-.btn-cancel-req { width: 100%; padding: 11px; background: transparent; color: var(--error); border: 1.5px solid var(--error); border-radius: 8px; font-size: 13px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.15s; }
-.btn-cancel-req:hover { background: var(--error); color: var(--white); }
+.btn-cancel-req { width: 100%; padding: 9px; background: transparent; color: #888; border: 1.5px solid #ccc; border-radius: 8px; font-size: 12px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.15s; }
+.btn-cancel-req:hover { background: #f0f0f0; color: #555; border-color: #aaa; }
 /* ── 취소 확인 모달 ── */
 .cancel-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end; justify-content: center; }
 .cancel-modal-backdrop.open { display: flex; }
-.cancel-modal { background: var(--white); border-radius: 20px 20px 0 0; width: 100%; max-width: 520px; padding: 0 0 28px; animation: slideUp 0.22s ease; }
+.cancel-modal { background: var(--white); border-radius: 16px 16px 0 0; width: 100%; max-width: 520px; padding: 0 0 20px; animation: slideUp 0.22s ease; }
 @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.cancel-modal-header { background: var(--error); padding: 16px 20px; border-radius: 20px 20px 0 0; text-align: center; }
-.cancel-modal-header h3 { font-family: 'Nanum Myeongjo', serif; color: var(--white); font-size: 16px; font-weight: 800; }
-.cancel-modal-header p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 4px; }
-.cancel-modal-body { padding: 18px 20px 0; }
-.cancel-modal-body label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 7px; }
-.cancel-modal-btns { display: flex; gap: 10px; padding: 14px 20px 0; }
-.btn-cm-back { flex: 1; padding: 13px; background: var(--light); color: var(--navy); border: none; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
-.btn-cm-confirm { flex: 2; padding: 13px; background: var(--error); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+.cancel-modal-header { background: #4a5568; padding: 14px 20px; border-radius: 20px 20px 0 0; text-align: center; }
+.cancel-modal-header h3 { font-family: 'Nanum Myeongjo', serif; color: var(--white); font-size: 15px; font-weight: 700; }
+.cancel-modal-header p { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 3px; }
+.cancel-modal-body { padding: 14px 18px 0; }
+.cancel-modal-body label { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; }
+.cancel-modal-btns { display: flex; gap: 8px; padding: 12px 18px 0; }
+.btn-cm-back { flex: 1; padding: 11px; background: var(--light); color: var(--navy); border: none; border-radius: 8px; font-size: 13px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+.btn-cm-confirm { flex: 2; padding: 11px; background: #4a5568; color: var(--white); border: none; border-radius: 8px; font-size: 13px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
 .btn-cm-confirm:disabled { background: var(--gray); cursor: not-allowed; }
 /* ── 테이블 ── */
 .info-table { width: 100%; border-collapse: collapse; }
@@ -158,7 +158,7 @@ textarea:focus { outline: none; border-color: var(--error); background: var(--wh
 <div class="cancel-modal-backdrop" id="cancelBackdrop">
   <div class="cancel-modal">
     <div class="cancel-modal-header">
-      <h3>❌ 신청 취소</h3>
+      <h3>신청 취소</h3>
       <p>취소 후에는 되돌릴 수 없습니다</p>
     </div>
     <div class="cancel-modal-body">
