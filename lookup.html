@@ -247,10 +247,11 @@ function fmtDate(raw) {
 }
 
 function statusClass(st) {
-  if (!st) return 'other';
-  if (st === '대기' || st === '접수') return 'pending';
-  if (st === '진행중' || st === '처리중') return 'inprogress';
-  return 'other';
+if (!st) return 'other';
+if (st === '신청확인') return 'confirmed';
+if (st === '대기' || st === '접수') return 'pending';
+if (st === '진행중' || st === '처리중') return 'inprogress';
+return 'other';
 }
 
 async function doSearch() {
