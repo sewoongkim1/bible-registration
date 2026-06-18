@@ -540,6 +540,7 @@ async function submitForm() {
     fd.append('선택유형2', type2);
     fd.append('성경선택', bibleStr);
     fd.append('총부수', String(totalQty));
+    fd.append('상태', '신청확인');
     fd.append('요청사항', memo);
 
     const res = await fetch(API_URL, { method: 'POST', body: fd });
