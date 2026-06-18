@@ -43,8 +43,6 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
 .hint { font-size: 11px; color: var(--gray); margin-top: 5px; }
 .btn-search { width: 100%; padding: 14px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
 .btn-search:disabled { background: var(--gray); cursor: not-allowed; }
-.btn-stats { display: none; width: 100%; padding: 12px; background: transparent; color: var(--navy); border: 1.5px solid var(--navy); border-radius: 10px; font-size: 13px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
-.btn-stats:hover { background: var(--navy); color: var(--white); }
 .loading { display: none; text-align: center; padding: 12px; color: var(--gray); font-size: 13px; }
 .loading.show { display: block; }
 .msg { display: none; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.6; margin-top: 14px; text-align: center; }
@@ -58,76 +56,108 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
 .result-count strong { color: var(--navy); font-size: 16px; }
 
 /* ── 결과 카드 ── */
-.person-card {
-  background: var(--white);
-  border-radius: 12px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 10px rgba(26,58,107,0.09);
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
+.person-card { background: var(--white); border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(26,58,107,0.09); overflow: hidden; border: 1px solid var(--border); }
 
-/* 네이비 타이틀 바 */
-.person-card-header {
-  background: var(--navy);
-  padding: 10px 16px;
+.person-card-header { background: var(--navy); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+.person-card-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; }
+
+.person-card-name-row { background: var(--white); padding: 12px 16px 11px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.person-card-name { font-family: 'Nanum Myeongjo', serif; font-size: 18px; font-weight: 800; color: var(--navy); }
+
+/* ── 진행 상태 스텝퍼 ── */
+.status-stepper {
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+.stepper-track {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+}
+.stepper-track::before {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  right: 13px;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+.stepper-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--white);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 700;
+  margin-bottom: 5px;
+  transition: all 0.2s;
 }
-.person-card-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 2px;
-  text-transform: uppercase;
+.stepper-label {
+  font-size: 9px;
+  color: var(--gray);
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.3;
 }
+/* 완료된 단계 */
+.stepper-item.done .stepper-dot {
+  background: #b2dfdb;
+  border-color: #4db6ac;
+  color: #00695c;
+}
+.stepper-item.done .stepper-label { color: #00695c; }
+/* 현재 단계 */
+.stepper-item.current .stepper-dot {
+  background: var(--gold);
+  border-color: #a07820;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(200,168,75,0.22);
+  transform: scale(1.18);
+}
+.stepper-item.current .stepper-label { color: #7a5800; font-weight: 700; }
 
-/* 이름 섹션 — 타이틀과 분리된 흰 배경 영역 */
-.person-card-name-row {
-  background: var(--white);
-  padding: 12px 16px 11px;
-  border-bottom: 2px solid var(--border);
+/* ── 안내 메시지 박스 ── */
+.status-message {
+  margin: 0 16px 14px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
 }
-.person-card-name {
-  font-family: 'Nanum Myeongjo', serif;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--navy);
-}
+.status-message.s-step1 { background: #fff8e1; color: #7a5800; border: 1px solid #ffe082; }
+.status-message.s-step2 { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.status-message.s-step3 { background: #e3f2fd; color: #0a4d8c; border: 1px solid #90caf9; }
+.status-message.s-step4 { background: #f3e5f5; color: #6a1b9a; border: 1px solid #ce93d8; }
+.status-message.s-step5 { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
+.status-message-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 
-/* 상태 배지 */
-.status-badge { font-size: 11px; font-weight: 700; padding: 4px 11px; border-radius: 20px; letter-spacing: 0.3px; }
-.status-badge.pending    { background: #fff8e1; color: #7a5800; border: 1px solid #f0d060; }
-.status-badge.inprogress { background: #e3f2fd; color: #0a4d8c; border: 1px solid #90c4f0; }
-.status-badge.other      { background: var(--light); color: var(--gray); border: 1px solid var(--border); }
-
-/* 테이블 — 배경색 없이 라인만 */
+/* ── 테이블 ── */
 .info-table { width: 100%; border-collapse: collapse; }
 .info-table tr:last-child td { border-bottom: none; }
-.info-table td {
-  padding: 10px 16px;
-  font-size: 13px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-  background: var(--white);
-}
-.info-table td.key {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--gray);
-  width: 76px;
-  white-space: nowrap;
-  border-right: 1px solid var(--border);
-}
-.info-table td.val {
-  color: #1a2a40;
-  font-weight: 400;
-  line-height: 1.5;
-}
+.info-table td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; background: var(--white); }
+.info-table td.key { font-size: 12px; font-weight: 600; color: var(--gray); width: 76px; white-space: nowrap; border-right: 1px solid var(--border); }
+.info-table td.val { color: #1a2a40; font-weight: 400; line-height: 1.5; }
 
 /* ── 통계 카드 ── */
 #statsArea { display: none; }
@@ -182,42 +212,26 @@ input[type="text"]:focus { outline: none; border-color: var(--navy); background:
       <p class="hint">이름 전체를 정확히 입력해야 조회됩니다.</p>
     </div>
     <button class="btn-search" id="searchBtn" onclick="doSearch()">🔍 조회하기</button>
-    <button class="btn-stats" onclick="doStats()" style="display:none">📊 전체 신청 현황 보기</button>
   </div>
   <div class="loading" id="loading">⏳ 조회 중입니다...</div>
   <div class="msg" id="msg"></div>
   <div id="results">
     <div class="result-header">
-      <div class="result-count">총 <strong id="resultCount">0</strong>명</div>
+      <div class="result-count">총 <strong id="resultCount">0</strong>건</div>
     </div>
     <div id="resultList"></div>
   </div>
-  <div id="statsArea">
-    <div class="card">
-      <div class="card-title">전체 신청 현황</div>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-label">총 신청자</div>
-          <div class="stat-value" id="st-total">-</div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">교구별 신청 현황</div>
-      <div class="bar-list" id="st-district"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">성경 선택 현황</div>
-      <div class="bar-list" id="st-bible"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">필사 유형 현황</div>
-      <div class="bar-list" id="st-type1"></div>
-    </div>
-  </div>
-</main>
-<script>
+</main><script>
 var API_URL = 'https://script.google.com/macros/s/AKfycby45DUS0n1aOGZIDE7R02tqywSQNZC8q6oQG0GbpQs7FyAl18hWNxjZKk4G3VXoH9UrDQ/exec';
+
+/* 상태 단계 정의 */
+var STATUS_STEPS = [
+  { key: '신청확인', icon: '✅', cls: 's-step1', msg: '입금 부탁드립니다.' },
+  { key: '입금확인', icon: '💰', cls: 's-step2', msg: '입금 확인되었습니다.' },
+  { key: '준비중',   icon: '🔧', cls: 's-step3', msg: '준비중 입니다.' },
+  { key: '준비완료', icon: '📦', cls: 's-step4', msg: '신청하신 필사노트가 준비되었습니다.' },
+  { key: '완료',    icon: '🎉', cls: 's-step5', msg: '필사노트가 전달되었습니다.' }
+];
 
 function getSelectedDistrict() {
   var checked = document.querySelector('input[name="district"]:checked');
@@ -229,7 +243,7 @@ function fmtDate(raw) {
   var s = String(raw).trim();
   var d = new Date(s);
   if (isNaN(d.getTime())) {
-    var m = s.match(/(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\s*(오전|오후)?\s*(\d{1,2}):(\d{2})/);
+    var m = s.match(/(d{4}).s*(d{1,2}).s*(d{1,2})s*(오전|오후)?s*(d{1,2}):(d{2})/);
     if (m) {
       var h = parseInt(m[5], 10);
       if (m[4] === '오후' && h < 12) h += 12;
@@ -246,46 +260,91 @@ function fmtDate(raw) {
   return yy + '-' + mo + '-' + dd + ' ' + hh + ':' + mi;
 }
 
-function statusClass(st) {
-if (!st) return 'other';
-if (st === '신청확인') return 'confirmed';
-if (st === '대기' || st === '접수') return 'pending';
-if (st === '진행중' || st === '처리중') return 'inprogress';
-return 'other';
+function getStepIndex(status) {
+  for (var i = 0; i < STATUS_STEPS.length; i++) {
+    if (STATUS_STEPS[i].key === status) return i;
+  }
+  return 0; /* 기본값: 신청확인 */
+}
+
+/* ── 진행 스텝퍼 렌더 ── */
+function renderStepper(status) {
+  var curIdx = getStepIndex(status);
+  var wrap = document.createElement('div');
+  wrap.className = 'status-stepper';
+
+  var track = document.createElement('div');
+  track.className = 'stepper-track';
+
+  STATUS_STEPS.forEach(function(step, i) {
+    var item = document.createElement('div');
+    item.className = 'stepper-item';
+    if (i < curIdx) item.className += ' done';
+    else if (i === curIdx) item.className += ' current';
+
+    var dot = document.createElement('div');
+    dot.className = 'stepper-dot';
+    dot.textContent = i < curIdx ? '✓' : (i === curIdx ? step.icon : String(i + 1));
+
+    var lbl = document.createElement('div');
+    lbl.className = 'stepper-label';
+    lbl.textContent = step.key;
+
+    item.appendChild(dot);
+    item.appendChild(lbl);
+    track.appendChild(item);
+  });
+
+  wrap.appendChild(track);
+  return wrap;
+}
+
+/* ── 안내 메시지 렌더 ── */
+function renderStatusMsg(status) {
+  var curIdx = getStepIndex(status);
+  var step = STATUS_STEPS[curIdx];
+  var box = document.createElement('div');
+  box.className = 'status-message ' + step.cls;
+
+  var icon = document.createElement('span');
+  icon.className = 'status-message-icon';
+  icon.textContent = step.icon;
+
+  var txt = document.createElement('span');
+  txt.textContent = step.msg;
+
+  box.appendChild(icon);
+  box.appendChild(txt);
+  return box;
 }
 
 async function doSearch() {
   var district = getSelectedDistrict();
-  var pasture  = document.getElementById('s-pasture').value.trim();
-  var name     = document.getElementById('s-name').value.trim();
+  var pasture = document.getElementById('s-pasture').value.trim();
+  var name = document.getElementById('s-name').value.trim();
   var missing = [];
   if (!district) missing.push('교구');
   if (!pasture) missing.push('목장');
   if (!name) missing.push('성명');
-  if (missing.length > 0) {
-    showWarn(missing.join(', ') + '을(를) 입력(선택)해 주세요.');
-    return;
-  }
+  if (missing.length > 0) { showWarn(missing.join(', ') + '을(를) 입력(선택)해 주세요.'); return; }
   setLoading(true);
   hideResults();
   hideMsg();
   try {
     var params = new URLSearchParams({ action: 'lookup' });
-    if (district) params.append('교구', district);
-    if (pasture)  params.append('목장', pasture);
-    if (name)     params.append('성명', name);
-    var res  = await fetch(API_URL + '?' + params);
+    params.append('교구', district);
+    params.append('목장', pasture);
+    params.append('성명', name);
+    var res = await fetch(API_URL + '?' + params);
     var data = await res.json();
     if (data.status === 'success') {
       var filtered = (data.data || []).filter(function(person) {
         var pDistrict = String(person['교구'] || '').trim();
         var pPasture  = String(person['목장'] || '').trim();
         var pName     = String(person['성명'] || '').trim();
-        var pStatus   = String(person['상태'] || '').trim();
-        if (pStatus === '완료') return false;
         if (pDistrict !== district) return false;
-        if (pasture  && pPasture  !== pasture)  return false;
-        if (name     && pName     !== name)     return false;
+        if (pasture && pPasture !== pasture) return false;
+        if (name && pName !== name) return false;
         return true;
       });
       renderResults(filtered);
@@ -299,36 +358,11 @@ async function doSearch() {
   }
 }
 
-async function doStats() {
-  setLoading(true);
-  hideResults();
-  hideMsg();
-  document.getElementById('statsArea').style.display = 'none';
-  try {
-    var res  = await fetch(API_URL + '?action=stats');
-    var data = await res.json();
-    if (data.status === 'success') {
-      renderStats(data);
-    } else {
-      showMsg(data.message || '통계 조회 중 오류가 발생했습니다.');
-    }
-  } catch (err) {
-    showMsg('서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.');
-  } finally {
-    setLoading(false);
-  }
-}
-
 function makeRow(key, val) {
-  var tr  = document.createElement('tr');
-  var tdK = document.createElement('td');
-  tdK.className = 'key';
-  tdK.textContent = key;
-  var tdV = document.createElement('td');
-  tdV.className = 'val';
-  tdV.textContent = val || '-';
-  tr.appendChild(tdK);
-  tr.appendChild(tdV);
+  var tr = document.createElement('tr');
+  var tdK = document.createElement('td'); tdK.className = 'key'; tdK.textContent = key;
+  var tdV = document.createElement('td'); tdV.className = 'val'; tdV.textContent = val || '-';
+  tr.appendChild(tdK); tr.appendChild(tdV);
   return tr;
 }
 
@@ -338,36 +372,29 @@ function renderResults(list) {
   var listEl    = document.getElementById('resultList');
   countEl.textContent = list.length;
   listEl.innerHTML = '';
+
   if (list.length === 0) {
-    var noEl   = document.createElement('div');
+    var noEl = document.createElement('div');
     noEl.className = 'no-result';
-    var iconEl = document.createElement('div');
-    iconEl.className = 'icon';
-    iconEl.textContent = '📭';
-    var msgEl  = document.createElement('div');
-    msgEl.textContent = '조회 결과가 없습니다.';
-    noEl.appendChild(iconEl);
-    noEl.appendChild(msgEl);
+    var iconEl = document.createElement('div'); iconEl.className = 'icon'; iconEl.textContent = '📭';
+    var msgEl = document.createElement('div'); msgEl.textContent = '조회 결과가 없습니다.';
+    noEl.appendChild(iconEl); noEl.appendChild(msgEl);
     listEl.appendChild(noEl);
   } else {
     list.forEach(function(person) {
-      var status = String(person['상태'] || '').trim();
-      var card   = document.createElement('div');
+      var status = String(person['상태'] || '신청확인').trim();
+      var card = document.createElement('div');
       card.className = 'person-card';
 
-      /* 네이비 타이틀 바 (신청자 라벨만) */
+      /* 헤더 */
       var header = document.createElement('div');
       header.className = 'person-card-header';
       var lbl = document.createElement('span');
       lbl.className = 'person-card-label';
-      lbl.textContent = '신청자 정보';
-      var badge = document.createElement('span');
-      badge.className = 'status-badge ' + statusClass(status);
-      badge.textContent = status || '상태없음';
+      lbl.textContent = '성경필사 신청';
       header.appendChild(lbl);
-      header.appendChild(badge);
 
-      /* 이름 섹션 — 흰 배경으로 타이틀과 분리 */
+      /* 이름 */
       var nameRow = document.createElement('div');
       nameRow.className = 'person-card-name-row';
       var nameEl = document.createElement('span');
@@ -375,21 +402,29 @@ function renderResults(list) {
       nameEl.textContent = person['성명'] || '(이름 없음)';
       nameRow.appendChild(nameEl);
 
+      /* 스텝퍼 */
+      var stepper = renderStepper(status);
+
+      /* 안내 메시지 */
+      var msgBox = renderStatusMsg(status);
+
       /* 테이블 */
       var table = document.createElement('table');
       table.className = 'info-table';
       var tbody = document.createElement('tbody');
-      tbody.appendChild(makeRow('교구',    person['교구']));
-      tbody.appendChild(makeRow('목장',    person['목장']));
-      tbody.appendChild(makeRow('직분',    person['직분']));
+      tbody.appendChild(makeRow('교구', person['교구']));
+      tbody.appendChild(makeRow('목장', person['목장']));
+      tbody.appendChild(makeRow('직분', person['직분']));
       tbody.appendChild(makeRow('성경선택', person['성경선택']));
       tbody.appendChild(makeRow('필사유형', person['선택유형1']));
-      tbody.appendChild(makeRow('번역본',  person['선택유형2']));
-      tbody.appendChild(makeRow('신청일',  fmtDate(person['타임스탬프'])));
+      tbody.appendChild(makeRow('번역본', person['선택유형2']));
+      tbody.appendChild(makeRow('신청일', fmtDate(person['타임스탬프'])));
       table.appendChild(tbody);
 
       card.appendChild(header);
       card.appendChild(nameRow);
+      card.appendChild(stepper);
+      card.appendChild(msgBox);
       card.appendChild(table);
       listEl.appendChild(card);
     });
@@ -397,57 +432,27 @@ function renderResults(list) {
   resultsEl.style.display = 'block';
 }
 
-function renderStats(data) {
-  document.getElementById('st-total').textContent = data.total + '명';
-  renderBars('st-district', data.byDistrict, data.total);
-  renderBars('st-bible', data.byBible, data.total);
-  renderBars('st-type1', data.byType1, data.total);
-  document.getElementById('statsArea').style.display = 'block';
-}
-
-function renderBars(containerId, obj, total) {
-  var el = document.getElementById(containerId);
-  el.innerHTML = '';
-  if (!obj || Object.keys(obj).length === 0) { el.textContent = '데이터 없음'; return; }
-  Object.entries(obj).sort(function(a,b){return b[1]-a[1];}).forEach(function(entry) {
-    var pct  = total > 0 ? Math.round(entry[1]/total*100) : 0;
-    var item = document.createElement('div'); item.className = 'bar-item';
-    var lbl  = document.createElement('div'); lbl.className = 'bar-label'; lbl.textContent = entry[0];
-    var track= document.createElement('div'); track.className = 'bar-track';
-    var fill = document.createElement('div'); fill.className = 'bar-fill'; fill.style.width='0%'; fill.dataset.w=pct+'%';
-    track.appendChild(fill);
-    var cnt  = document.createElement('div'); cnt.className = 'bar-count'; cnt.textContent = entry[1];
-    item.appendChild(lbl); item.appendChild(track); item.appendChild(cnt);
-    el.appendChild(item);
-  });
-  requestAnimationFrame(function(){ el.querySelectorAll('.bar-fill').forEach(function(b){b.style.width=b.dataset.w;}); });
-}
-
 function setLoading(on) {
-  document.getElementById('loading').className = 'loading'+(on?' show':'');
+  document.getElementById('loading').className = 'loading' + (on ? ' show' : '');
   document.getElementById('searchBtn').disabled = on;
 }
-function hideResults() {
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('statsArea').style.display = 'none';
-}
+function hideResults() { document.getElementById('results').style.display = 'none'; }
 function showMsg(text) {
   var el = document.getElementById('msg');
   el.className = 'msg error';
   el.textContent = '❌ ' + text;
 }
 function showWarn(text) {
-var el = document.getElementById('msg');
-el.className = 'msg warn';
-el.textContent = '⚠️ ' + text;
+  var el = document.getElementById('msg');
+  el.className = 'msg warn';
+  el.textContent = '⚠️ ' + text;
 }
 function hideMsg() {
   var el = document.getElementById('msg');
-  el.className = 'msg';
-  el.textContent = '';
+  el.className = 'msg'; el.textContent = '';
 }
 ['s-pasture','s-name'].forEach(function(id){
-  document.getElementById(id).addEventListener('keydown',function(e){ if(e.key==='Enter') doSearch(); });
+  document.getElementById(id).addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
 });
 </script>
 </body>
